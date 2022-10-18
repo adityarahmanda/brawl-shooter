@@ -2,39 +2,43 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class LevelMenu : MonoBehaviour
+namespace TowerBomber
 {
-    [Header("Panels")]
-    [SerializeField] private GameObject m_mainPanel;
-    [SerializeField] private GameObject m_gameOverPanel;
-    
-    [Header("UI Reference")]
-    [SerializeField] private TextMeshProUGUI m_timeSurvivedText;
-    [SerializeField] private TextMeshProUGUI m_timeSurvivedScoreText;
-    [SerializeField] private Button m_restartButton;
-    [SerializeField] private Button m_mainMenuButton;
-
-    private void Start() 
+    public class LevelMenu : MonoBehaviour
     {
-        m_mainPanel.SetActive(true);
-        m_gameOverPanel.SetActive(false);
+        [Header("Panels")]
+        [SerializeField] private GameObject m_mainPanel;
+        [SerializeField] private GameObject m_gameOverPanel;
 
-        LevelManager.i.onLevelEnded.AddListener(() => {
-            var timeSurvived = LevelManager.i.timeSurvived.ToString("0.00");
-            m_timeSurvivedScoreText.SetText($"Time Survived: {timeSurvived}s");
-            m_mainPanel.SetActive(false);
-            m_gameOverPanel.SetActive(true);
-        });
+        [Header("UI Reference")]
+        [SerializeField] private TextMeshProUGUI m_timeSurvivedText;
+        [SerializeField] private TextMeshProUGUI m_timeSurvivedScoreText;
+        [SerializeField] private Button m_restartButton;
+        [SerializeField] private Button m_mainMenuButton;
 
-        m_restartButton.onClick.AddListener(() => GameManager.i.StartGame());
-        m_mainMenuButton.onClick.AddListener(() => GameManager.i.ReturnToMainMenu());
-    }
+        private void Start()
+        {
+            m_mainPanel.SetActive(true);
+            m_gameOverPanel.SetActive(false);
 
-    private void Update() 
-    {
-        if(LevelManager.i.LevelEnded) return;
+            //LevelManager.i.onLevelEnded.AddListener(() =>
+            //{
+            //    var timeSurvived = LevelManager.i.timeSurvived.ToString("0.00");
+            //    m_timeSurvivedScoreText.SetText($"Time Survived: {timeSurvived}s");
+            //    m_mainPanel.SetActive(false);
+            //    m_gameOverPanel.SetActive(true);
+            //});
 
-        var timeSurvived = LevelManager.i.timeSurvived.ToString("0.00");
-        m_timeSurvivedText.SetText($"Time Survived: {timeSurvived}s");    
+            // m_restartButton.onClick.AddListener(() => GameManager.instance.StartGame());
+            // m_mainMenuButton.onClick.AddListener(() => GameManager.instance.ReturnToMainMenu());
+        }
+
+        private void Update()
+        {
+            // if (LevelManager.i.LevelEnded) return;
+
+            // var timeSurvived = LevelManager.i.timeSurvived.ToString("0.00");
+            // m_timeSurvivedText.SetText($"Time Survived: {timeSurvived}s");
+        }
     }
 }

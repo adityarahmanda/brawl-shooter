@@ -1,12 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour 
+namespace TowerBomber
 {
-    [SerializeField] private Button m_playButton;
-
-    private void Start() 
+    public class MainMenu : MonoBehaviour
     {
-        m_playButton.onClick.AddListener(GameManager.i.StartGame);
-    }    
+        [SerializeField] private Button m_playButton;
+
+        private void Start()
+        {
+            // m_playButton.onClick.AddListener(GameManager.instance.StartGame);
+        }
+    }
 }

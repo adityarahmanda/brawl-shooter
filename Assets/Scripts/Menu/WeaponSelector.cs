@@ -3,77 +3,77 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WeaponSelector : MonoBehaviour
+namespace TowerBomber
 {
-    [SerializeField] private Weapon[] m_weapons;
-    [SerializeField] private Button m_selectorButton;
-
-    private Animator m_animator;
-
-    private int m_selectedWeaponIndex;
-
-    private void Awake() 
+    public class WeaponSelector : MonoBehaviour
     {
-        m_animator = GetComponent<Animator>();    
-    }
+        [SerializeField] private Weapon[] m_weapons;
 
-    private void Start() 
-    {
-        m_selectedWeaponIndex = GetWeaponIndex(GameManager.i.weaponType);
+        private Animator m_animator;
 
-        for(int i = 0; i < m_weapons.Length; i++)
+        private int m_selectedWeaponIndex;
+
+        private void Awake()
         {
-            if(i == m_selectedWeaponIndex)
+            m_animator = GetComponent<Animator>();
+        }
+
+        private void Start()
+        {
+            // m_selectedWeaponIndex = GetWeaponIndex(GameManager.instance.weaponType);
+
+            for (int i = 0; i < m_weapons.Length; i++)
             {
-                m_weapons[i].gameObject.SetActive(true);
-            } 
-            else
+                if (i == m_selectedWeaponIndex)
+                {
+                    m_weapons[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    m_weapons[i].gameObject.SetActive(false);
+                }
+            }
+
+            ResetAnimation();
+        }
+
+        public void ToggleWeapon()
+        {
+            m_weapons[m_selectedWeaponIndex].gameObject.SetActive(false);
+            m_selectedWeaponIndex++;
+
+            if (m_selectedWeaponIndex >= m_weapons.Length)
             {
-                m_weapons[i].gameObject.SetActive(false);
+                m_selectedWeaponIndex = 0;
+            }
+
+            m_weapons[m_selectedWeaponIndex].gameObject.SetActive(true);
+            // GameManager.instance.weaponType = m_weapons[m_selectedWeaponIndex].type;
+            ResetAnimation();
+        }
+
+        private void ResetAnimation()
+        {
+            switch (m_weapons[m_selectedWeaponIndex].type)
+            {
+                case WeaponType.SingleShot:
+                    m_animator.SetTrigger("gun");
+                    break;
+                case WeaponType.RapidShot:
+                    m_animator.SetTrigger("machineGun");
+                    break;
             }
         }
 
-        ResetAnimation();
-
-        m_selectorButton.onClick.AddListener(ToggleWeapon);
-    }
-
-    public void ToggleWeapon()
-    {
-        m_weapons[m_selectedWeaponIndex].gameObject.SetActive(false);
-        m_selectedWeaponIndex++;
-
-        if(m_selectedWeaponIndex >= m_weapons.Length)
+        private int GetWeaponIndex(WeaponType type)
         {
-            m_selectedWeaponIndex = 0;
+            for (int i = 0; i < m_weapons.Length; i++)
+            {
+                if (m_weapons[i].type == type)
+                    return i;
+            }
+
+            return -1;
         }
-
-        m_weapons[m_selectedWeaponIndex].gameObject.SetActive(true);
-        GameManager.i.weaponType = m_weapons[m_selectedWeaponIndex].type;
-        ResetAnimation();
-    }
-
-    private void ResetAnimation()
-    {
-        switch (m_weapons[m_selectedWeaponIndex].type)
-        {
-            case WeaponType.SingleShot:
-                m_animator.SetTrigger("gun");
-                break;
-            case WeaponType.RapidShot:
-                m_animator.SetTrigger("machineGun");
-                break;
-        }
-    }
-
-    private int GetWeaponIndex(WeaponType type)
-    {
-        for(int i = 0; i < m_weapons.Length; i++)
-        {
-            if(m_weapons[i].type == type)
-                return i;
-        }
-
-        return -1;
     }
 }
