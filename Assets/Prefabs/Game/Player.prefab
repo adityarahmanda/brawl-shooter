@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 4457387356328599048}
   - component: {fileID: 8411306326697764946}
   - component: {fileID: 8742374583119444906}
+  - component: {fileID: -8629199369115183158}
+  - component: {fileID: -2719398689803311446}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -56,6 +58,8 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 8742374583119444906}
+  - {fileID: -8629199369115183158}
+  - {fileID: -2719398689803311446}
   SimulationBehaviours: []
 --- !u!114 &8742374583119444906
 MonoBehaviour:
@@ -78,3 +82,32 @@ MonoBehaviour:
     _value: 0
   _health: 0
   _state: 0
+  weaponController: {fileID: 0}
+--- !u!114 &-8629199369115183158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4457387356329017896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31eb2a0b6e51cc240b966e1eed994756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+--- !u!114 &-2719398689803311446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4457387356329017896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 095433d16a6698c46ba726368268e016, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  __weapon: {fileID: 0}
+  m_muzzleFX: {fileID: 0}

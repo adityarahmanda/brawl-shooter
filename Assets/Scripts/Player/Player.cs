@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Fusion;
 using UnityEngine;
+using PlayState = TowerBomber.GameManager.PlayState;
 
 namespace TowerBomber
 {
@@ -11,7 +12,7 @@ namespace TowerBomber
         [Networked] 
         public NetworkString<_128> playerName { get; set; }
 
-        [Networked]
+        [Networked(OnChanged = nameof(OnReadyChanged))]
         public NetworkBool ready { get; set; }
 
         [Networked] 
@@ -21,22 +22,26 @@ namespace TowerBomber
 
         public enum State
         {
-            Joined,
+            InLobby,
             Despawned,
-            Spawning,
             Active,
             Dead
         }
 
-        [Networked(OnChanged = nameof(OnStateChanged))]
+        [Networked(OnChanged = nameof(OnStateChanged)), SerializeField]
         public State state { get; set; }
+
+        public bool isActivated => (gameObject.activeInHierarchy && state == State.Active);
 
         public static Player local { get; set; }
 
         public override void Spawned()
         {
             if (Object.HasInputAuthority)
+            {
                 local = this;
+                InputController.fetchInput = true;
+            }
 
             // Getting this here because it will revert to -1 if the player disconnects, but we still want to remember the Id we were assigned for clean-up purposes
             playerID = Object.InputAuthority;
@@ -45,10 +50,62 @@ namespace TowerBomber
             PlayerManager.AddPlayer(this);
         }
 
-        public void InitNetworkState()
+        public override void Despawned(NetworkRunner runner, bool hasState)
         {
-            state = State.Joined;
+            PlayerManager.RemovePlayer(this);
+        }
+
+        public async void TriggerDespawn()
+        {
+            PlayerManager.RemovePlayer(this);
+
+            if (Object == null) { return; }
+
+            if (Object.HasStateAuthority)
+            {
+                Runner.Despawn(Object);
+            }
+        }
+
+        public void SetPlayerState(State state)
+        {
+            state = state;
+        }
+
+        public void DespawnCharacter()
+        {
+            if (state == State.Dead)
+                return;
+
+            state = State.Despawned;
+        }
+
+        public void ToggleReady()
+        {
+            ready = !ready;
+        }
+
+        public void ResetReady()
+        {
+            ready = false;
+        }
+
+        public void ResetStats()
+        {
+            // Debug.Log($"Resetting player {playerID}, tick={Runner.Simulation.Tick}, timer={respawnTimer.IsRunning}:{respawnTimer.TargetTick}, life={life}, lives={lives}, hasAuthority={Object.HasStateAuthority} to state={state}");
             health = MAX_HEALTH;
+        }
+
+        public void ApplyDamage(Vector3 impulse, byte damage, PlayerRef source)
+        {
+            if (!isActivated)
+                return;
+
+            if (Object.HasStateAuthority)
+            {
+                //_cc.Velocity += impulse / 10.0f; // Magic constant to compensate for not properly dealing with masses
+                //_cc.Move(Vector3.zero); // Velocity property is only used by CC when steering, so pretend we are, without actually steering anywhere
+            }
         }
 
         public static void OnStateChanged(Changed<Player> changed)
@@ -61,12 +118,6 @@ namespace TowerBomber
         {
             switch (state)
             {
-                case State.Joined:
-                    // LobbyManager
-                    break;
-                case State.Spawning:
-                    //_teleportIn.StartTeleport();
-                    break;
                 case State.Active:
                     //_damageVisuals.CleanUpDebris();
                     //_teleportIn.EndTeleport();
@@ -85,26 +136,15 @@ namespace TowerBomber
             }
         }
 
-        public async void TriggerDespawn()
+        public static void OnReadyChanged(Changed<Player> changed)
         {
-            PlayerManager.RemovePlayer(this);
-
-            if (Object == null) { return; }
-
-            if (Object.HasStateAuthority)
-            {
-                Runner.Despawn(Object);
-            }
+            if (changed.Behaviour)
+                changed.Behaviour.OnReadyChanged();
         }
 
-        public void ToggleReady()
+        public void OnReadyChanged()
         {
-            ready = !ready;
-        }
-
-        public void ApplyDamage(Vector3 impulse, byte damage, PlayerRef source)
-        {
-            
+            LobbyManager.instance.UpdatePlayerLobbyStatus(this);
         }
     }
 }

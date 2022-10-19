@@ -25,7 +25,7 @@ namespace TowerBomber
         protected Rigidbody m_body;
         protected Animator m_animator;
         protected CharacterController m_characterController;
-        protected PlayerWeaponController m_weaponController;
+        protected WeaponController m_weaponController;
 
         protected bool overrideDirection = false;
 
@@ -34,7 +34,7 @@ namespace TowerBomber
             m_body = GetComponent<Rigidbody>();
             m_animator = GetComponentInChildren<Animator>();
             m_characterController = GetComponent<CharacterController>();
-            m_weaponController = GetComponent<PlayerWeaponController>();
+            m_weaponController = GetComponent<WeaponController>();
         }
 
         protected virtual void Update()

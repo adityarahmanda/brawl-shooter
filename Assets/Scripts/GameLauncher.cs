@@ -2,6 +2,7 @@ using Fusion;
 using TMPro;
 using UnityEngine;
 using TowerBomber.FusionHelpers;
+using PlayState = TowerBomber.GameManager.PlayState;
 
 namespace TowerBomber
 {
@@ -19,6 +20,7 @@ namespace TowerBomber
         [SerializeField] private Panel _uiProgress;
         [SerializeField] private Panel _uiRoom;
         [SerializeField] private Panel _uiLobby;
+        [SerializeField] private Panel _uiGame;
 
         private FusionLauncher.ConnectionStatus _status = FusionLauncher.ConnectionStatus.Disconnected;
         private GameMode _gameMode;
@@ -106,7 +108,7 @@ namespace TowerBomber
 
         private void OnSpawnPlayer(NetworkRunner runner, PlayerRef playerref)
         {
-            if (GameManager.playState != GameManager.PlayState.LOBBY)
+            if (GameManager.playState != PlayState.LOBBY)
             {
                 Debug.Log("Not Spawning Player - game has already started");
                 return;
@@ -118,9 +120,10 @@ namespace TowerBomber
             void InitNetworkState(NetworkRunner runner, NetworkObject networkObject)
             {
                 Player player = networkObject.gameObject.GetComponent<Player>();
+                player.state = Player.State.InLobby;
 
-                Debug.Log($"Initializing player {player.playerID}");
-                player.InitNetworkState();
+                WeaponController weaponController = networkObject.gameObject.GetComponent<WeaponController>();
+                LobbyManager.instance.UpdateWeapon(weaponController);
             }
         }
 
@@ -143,17 +146,14 @@ namespace TowerBomber
         {
             bool intro = false;
             bool progress = false;
-            bool lobby = false;
             bool running = false;
 
             switch (_status)
             {
                 case FusionLauncher.ConnectionStatus.Disconnected:
-                    _progress.text = "Disconnected!";
                     intro = true;
                     break;
                 case FusionLauncher.ConnectionStatus.Failed:
-                    _progress.text = "Failed!";
                     intro = true;
                     break;
                 case FusionLauncher.ConnectionStatus.Connecting:
@@ -161,8 +161,7 @@ namespace TowerBomber
                     progress = true;
                     break;
                 case FusionLauncher.ConnectionStatus.Connected:
-                    _progress.text = "Connected";
-                    lobby = true;
+                    running = true;
                     break;
                 case FusionLauncher.ConnectionStatus.Loading:
                     _progress.text = "Loading";
@@ -175,7 +174,8 @@ namespace TowerBomber
 
             _uiStart.SetVisible(intro);
             _uiProgress.SetVisible(progress);
-            _uiLobby.SetVisible(lobby);
+            _uiLobby.SetVisible(GameManager.playState == PlayState.LOBBY && running);
+            _uiGame.SetVisible(GameManager.playState == PlayState.LEVEL && running);
         }
     }
 }

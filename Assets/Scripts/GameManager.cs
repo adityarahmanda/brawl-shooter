@@ -15,7 +15,7 @@ namespace TowerBomber
             TRANSITION
         }
 
-        [Networked]
+        [Networked, SerializeField]
         private PlayState networkedPlayState { get; set; }
 
         public static PlayState playState
@@ -35,7 +35,7 @@ namespace TowerBomber
 
         private bool _restart;
 
-        // private LevelManager _levelManager;
+        private LevelManager _levelManager;
 
         public override void Spawned()
         {
@@ -45,6 +45,9 @@ namespace TowerBomber
             else
             {
                 instance = this;
+
+                // Find managers and UI
+                _levelManager = FindObjectOfType<LevelManager>(true);
 
                 if (playState != PlayState.LOBBY)
                 {
@@ -75,7 +78,31 @@ namespace TowerBomber
             }
         }
 
-        private void LoadLevel(int nextLevelIndex, int winningPlayerIndex)
+        // Transition from lobby to level
+        public void OnAllPlayersReady()
+        {
+            if (playState != PlayState.LOBBY)
+                return;
+
+            Debug.Log("All players are ready");
+
+            // Reset stats and transition to level.
+            Debug.Log($"Resetting all player's stats");
+            for (int i = 0; i < PlayerManager.allPlayers.Count; i++)
+            {
+                PlayerManager.allPlayers[i].ResetStats();
+            }
+
+            // close and hide the session from matchmaking / lists. this demo does not allow late join.
+            Runner.SessionInfo.IsOpen = false;
+            Runner.SessionInfo.IsVisible = false;
+
+            // load level scene
+            LoadLevel(1);
+        }
+
+
+        private void LoadLevel(int nextLevelIndex)
         {
             if (!Object.HasStateAuthority)
                 return;
@@ -84,13 +111,10 @@ namespace TowerBomber
             //ResetLives();
 
             //// Reset players ready state so we don't launch immediately
-            //for (int i = 0; i < PlayerManager.allPlayers.Count; i++)
-            //    PlayerManager.allPlayers[i].ResetReady();
+            for (int i = 0; i < PlayerManager.allPlayers.Count; i++)
+                PlayerManager.allPlayers[i].ResetReady();
 
-            //// Start transition
-            //WinningPlayerIndex = winningPlayerIndex;
-
-            //_levelManager.LoadLevel(nextLevelIndex);
+            _levelManager.LoadLevel(nextLevelIndex);
         }
 
         public void StateAuthorityChanged()

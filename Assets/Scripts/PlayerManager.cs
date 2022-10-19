@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using PlayState = TowerBomber.GameManager.PlayState;
 
 namespace TowerBomber
 {
@@ -28,12 +29,8 @@ namespace TowerBomber
             {
                 Player player = _playerQueue.Dequeue();
 
-                if (GameManager.playState == GameManager.PlayState.LOBBY)
+                if (GameManager.playState == PlayState.LOBBY)
                     LobbyManager.instance.AddPlayer(player);
-
-                //CameraStrategy.AddTarget(player.gameObject);
-
-                //player.Respawn(0);
             }
         }
 
@@ -86,22 +83,18 @@ namespace TowerBomber
 
             Debug.Log("Player Removed " + player.playerID);
 
-            _allPlayers.Remove(player);
-
-            if(GameManager.playState == GameManager.PlayState.LOBBY)
+            if (GameManager.playState == GameManager.PlayState.LOBBY)
                 LobbyManager.instance.RemovePlayer(player);
 
-            //if (CameraStrategy) // FindObject May return null on shutdown, so let's avoid that NPE
-            //    CameraStrategy.RemoveTarget(player.gameObject);
+            _allPlayers.Remove(player);
         }
 
         public static void ResetPlayerManager()
         {
             Debug.Log("Clearing Player Manager");
             allPlayers.Clear();
-            //if (CameraStrategy) // FindObject May return null on shutdown, so let's avoid that NPE
-            //    CameraStrategy.RemoveAll();
-            //Player.local = null;
+
+            Player.local = null;
         }
 
         public static Player GetPlayerFromID(int id)

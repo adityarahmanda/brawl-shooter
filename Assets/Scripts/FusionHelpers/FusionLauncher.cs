@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
+using PlayState = TowerBomber.GameManager.PlayState;
 
 namespace TowerBomber.FusionHelpers
 {
@@ -112,7 +113,7 @@ namespace TowerBomber.FusionHelpers
 
         private void InstantiatePlayer(NetworkRunner runner, PlayerRef playerref)
         {
-            if (_spawnWorldCallback != null && (runner.IsServer || runner.IsSharedModeMasterClient))
+            if (_spawnWorldCallback != null && runner.IsServer)
             {
                 _spawnWorldCallback(runner);
                 _spawnWorldCallback = null;

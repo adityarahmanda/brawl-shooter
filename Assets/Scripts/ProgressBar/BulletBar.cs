@@ -1,21 +1,24 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BulletBar : ProgressBar 
+namespace TowerBomber
 {
-    [SerializeField] private RawImage m_progressBorderTile;
-    [SerializeField] private Weapon m_weapon;
-
-    protected override void Start() 
+    public class BulletBar : ProgressBar
     {
-        base.Start();
-        var uvRect = m_progressBorderTile.uvRect;
-        m_progressBorderTile.uvRect = new Rect(uvRect.x, uvRect.y, m_weapon.magazineSize, uvRect.height);
-    }
+        [SerializeField] private RawImage _progressBorderTile;
+        [SerializeField] private WeaponController _weaponController;
 
-    protected override void Update() 
-    {
-        base.Update();
-        SetProgress(m_weapon.bulletsLeft, m_weapon.magazineSize);
+        protected override void Start()
+        {
+            base.Start();
+            var uvRect = _progressBorderTile.uvRect;
+            _progressBorderTile.uvRect = new Rect(uvRect.x, uvRect.y, _weaponController.magazineSize, uvRect.height);
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+            SetProgress(_weaponController.bulletsLeft, _weaponController.magazineSize);
+        }
     }
 }
