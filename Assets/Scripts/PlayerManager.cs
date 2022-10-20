@@ -12,16 +12,7 @@ namespace TowerBomber
 
         private static Queue<Player> _playerQueue = new Queue<Player>();
 
-        //static private CameraStrategy _cameraStrategy;
-        //static private CameraStrategy CameraStrategy
-        //{
-        //    get
-        //    {
-        //        if (_cameraStrategy == null)
-        //            _cameraStrategy = FindObjectOfType<CameraStrategy>(true);
-        //        return _cameraStrategy;
-        //    }
-        //}
+        public static int MAX_PLAYERS = 3;
 
         public static void HandleNewPlayers()
         {
@@ -34,28 +25,17 @@ namespace TowerBomber
             }
         }
 
-        //public static int PlayersAlive()
-        //{
-        //    int playersAlive = 0;
-        //    for (int i = 0; i < _allPlayers.Count; i++)
-        //    {
-        //        if (_allPlayers[i].isActivated || _allPlayers[i].lives > 0)
-        //            playersAlive++;
-        //    }
+        public static int GetPlayersAlive()
+        {
+            int playersAlive = 0;
+            for (int i = 0; i < _allPlayers.Count; i++)
+            {
+                if (_allPlayers[i].IsActivated)
+                    playersAlive++;
+            }
 
-        //    return playersAlive;
-        //}
-
-        //public static Player GetFirstAlivePlayer()
-        //{
-        //    for (int i = 0; i < _allPlayers.Count; i++)
-        //    {
-        //        if (_allPlayers[i].isActivated)
-        //            return _allPlayers[i];
-        //    }
-
-        //    return null;
-        //}
+            return playersAlive;
+        }
 
         public static void AddPlayer(Player player)
         {

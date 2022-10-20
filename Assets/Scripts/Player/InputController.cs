@@ -20,22 +20,12 @@ namespace TowerBomber
         public bool ToggleReady { get; set; }
         public bool ToggleChangeWeapon { get; set; }
 
-        private Player _player;
-        private WeaponController _weaponController;
+        [SerializeField] private Player _player;
 
         private NetworkInputData _frameworkInput = new NetworkInputData();
-        //private Vector2 _moveDelta;
+        private bool _fire;
+        private Vector2 _moveDelta;
         //private Vector2 _aimDelta;
-        //private Vector2 _leftPos;
-        //private Vector2 _leftDown;
-        //private Vector2 _rightPos;
-        //private Vector2 _rightDown;
-        //private bool _leftTouchWasDown;
-        //private bool _rightTouchWasDown;
-        //private bool _primaryFire;
-        //private bool _secondaryFire;
-
-        //private MobileInput _mobileInput;
 
         /// <summary>
         /// Hook up to the Fusion callbacks so we can handle the input polling
@@ -44,7 +34,7 @@ namespace TowerBomber
         {
             //_mobileInput = FindObjectOfType<MobileInput>(true);
             _player = GetComponent<Player>();
-            _weaponController = GetComponent<WeaponController>();
+
             // Technically, it does not really matter which InputController fills the input structure, since the actual data will only be sent to the one that does have authority,
             // but in the name of clarity, let's make sure we give input control to the gameobject that also has Input authority.
             if (Object.HasInputAuthority)
@@ -65,22 +55,14 @@ namespace TowerBomber
             if (_player != null && _player.Object != null && fetchInput)
             {
                 // Fill networked input struct with input data
-
+                _frameworkInput.moveDirection = _moveDelta.normalized;
                 // _frameworkInput.aimDirection = _aimDelta.normalized;
 
-                // _frameworkInput.moveDirection = _moveDelta.normalized;
-
-                //if (_primaryFire)
-                //{
-                //    _primaryFire = false;
-                //    _frameworkInput.Buttons |= NetworkInputData.BUTTON_FIRE_PRIMARY;
-                //}
-
-                //if (_secondaryFire)
-                //{
-                //    _secondaryFire = false;
-                //    _frameworkInput.Buttons |= NetworkInputData.BUTTON_FIRE_SECONDARY;
-                //}
+                if (_fire)
+                {
+                    _fire = false;
+                    _frameworkInput.Buttons |= NetworkInputData.FIRE;
+                }
 
                 if (ToggleReady)
                 {
@@ -110,93 +92,33 @@ namespace TowerBomber
 
         private void Update()
         {
-            ToggleReady = ToggleReady || Input.GetKeyDown(KeyCode.R);
+            ToggleReady |= Input.GetKeyDown(KeyCode.R);
 
-            //if (Input.mousePresent)
-            //{
-            //    if (Input.GetMouseButton(0))
-            //        _primaryFire = true;
+            if (Input.mousePresent)
+            {
+                if (Input.GetMouseButton(0))
+                    _fire = true;
 
-            //    if (Input.GetMouseButton(1))
-            //        _secondaryFire = true;
+                _moveDelta = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-            //    _moveDelta = Vector2.zero;
+                //Vector3 mousePos = Input.mousePosition;
 
-            //    if (Input.GetKey(KeyCode.W))
-            //        _moveDelta += Vector2.up;
+                //RaycastHit hit;
+                //Ray ray = Camera.main.ScreenPointToRay(mousePos);
 
-            //    if (Input.GetKey(KeyCode.S))
-            //        _moveDelta += Vector2.down;
+                //Vector3 mouseCollisionPoint = Vector3.zero;
+                // Raycast towards the mouse collider box in the world
+                //if (Physics.Raycast(ray, out hit, Mathf.Infinity, _mouseRayMask))
+                //{
+                //    if (hit.collider != null)
+                //    {
+                //        mouseCollisionPoint = hit.point;
+                //    }
+                //}
 
-            //    if (Input.GetKey(KeyCode.A))
-            //        _moveDelta += Vector2.left;
-
-            //    if (Input.GetKey(KeyCode.D))
-            //        _moveDelta += Vector2.right;
-
-            //    Vector3 mousePos = Input.mousePosition;
-
-            //    RaycastHit hit;
-            //    Ray ray = Camera.main.ScreenPointToRay(mousePos);
-
-            //    Vector3 mouseCollisionPoint = Vector3.zero;
-            //    // Raycast towards the mouse collider box in the world
-            //    if (Physics.Raycast(ray, out hit, Mathf.Infinity, _mouseRayMask))
-            //    {
-            //        if (hit.collider != null)
-            //        {
-            //            mouseCollisionPoint = hit.point;
-            //        }
-            //    }
-
-            //    Vector3 aimDirection = mouseCollisionPoint - _player.turretPosition;
-            //    _aimDelta = new Vector2(aimDirection.x, aimDirection.z);
-            //}
-            //else if (Input.touchSupported)
-            //{
-            //    bool leftIsDown = false;
-            //    bool rightIsDown = false;
-
-            //    foreach (Touch touch in Input.touches)
-            //    {
-            //        if (touch.position.x < Screen.width / 2)
-            //        {
-            //            leftIsDown = true;
-            //            _leftPos = touch.position;
-            //            if (_leftTouchWasDown)
-            //                _moveDelta += 10.0f * touch.deltaPosition / Screen.dpi;
-            //            else
-            //                _leftDown = touch.position;
-            //        }
-            //        else
-            //        {
-            //            rightIsDown = true;
-            //            _rightPos = touch.position;
-            //            if (_rightTouchWasDown && (touch.position - _rightDown).magnitude > (0.01f * Screen.dpi))
-            //                _aimDelta = (10.0f / Screen.dpi) * (touch.position - _rightDown);
-            //            else
-            //                _rightDown = touch.position;
-            //        }
-            //    }
-            //    if (_rightTouchWasDown && !rightIsDown)
-            //        _primaryFire = true;
-            //    if (_leftTouchWasDown && !leftIsDown && _moveDelta.magnitude < 0.01f)
-            //        _secondaryFire = true;
-
-            //    if (!leftIsDown)
-            //        _moveDelta = Vector2.zero;
-
-            //    _mobileInput.gameObject.SetActive(true);
-            //    _mobileInput.SetLeft(leftIsDown, _leftDown, _leftPos);
-            //    _mobileInput.SetRight(rightIsDown, _rightDown, _rightPos);
-
-            //    _leftTouchWasDown = leftIsDown;
-            //    _rightTouchWasDown = rightIsDown;
-            //}
-            //else
-            //{
-            //    _mobileInput.gameObject.SetActive(false);
-            //}
+                // Vector3 aimDirection = mouseCollisionPoint - _player.turretPosition;
+                // _aimDelta = new Vector2(aimDirection.x, aimDirection.z);
+            }
         }
 
         /// <summary>
@@ -213,17 +135,17 @@ namespace TowerBomber
             Vector2 direction = default;
             if (GetInput(out NetworkInputData input))
             {
-                //direction = input.moveDirection.normalized;
+                direction = input.moveDirection.normalized;
 
-                //if (input.IsDown(NetworkInputData.BUTTON_FIRE_PRIMARY))
-                //{
-                //    _player.shooter.FireWeapon(WeaponController.WeaponInstallationType.PRIMARY);
-                //}
+                if (input.IsDown(NetworkInputData.FIRE))
+                {
+                    // _player.shooter.FireWeapon(WeaponController.WeaponInstallationType.PRIMARY);
+                }
 
-                //if (input.IsDown(NetworkInputData.BUTTON_FIRE_SECONDARY))
-                //{
-                //    _player.shooter.FireWeapon(WeaponController.WeaponInstallationType.SECONDARY);
-                //}
+                if (input.IsUp(NetworkInputData.FIRE))
+                {
+                    // _player.shooter.FireWeapon(WeaponController.WeaponInstallationType.PRIMARY);
+                }
 
                 if (input.IsDown(NetworkInputData.READY))
                 {
@@ -232,13 +154,13 @@ namespace TowerBomber
 
                 if(input.IsDown(NetworkInputData.CHANGE_WEAPON))
                 {
-                    _weaponController.ChangeWeaponType();
+                    _player.ToggleWeaponType();
                 }
 
                 // We let the NetworkCharacterController do the actual work
-                //_player.SetDirections(direction, input.aimDirection.normalized);
+                _player.SetDirections(direction);
             }
-            //_player.Move();
+            _player.Move();
         }
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
@@ -265,14 +187,13 @@ namespace TowerBomber
     /// </summary>
     public struct NetworkInputData : INetworkInput
     {
-        // public const uint BUTTON_FIRE_PRIMARY = 1 << 0;
-        // public const uint BUTTON_FIRE_SECONDARY = 1 << 1;
-        public const uint READY = 1 << 6;
-        public const uint CHANGE_WEAPON = 1 << 7;
+        public const uint FIRE = 1 << 0;
+        public const uint READY = 1 << 1;
+        public const uint CHANGE_WEAPON = 1 << 2;
 
         public uint Buttons;
-        // public Vector2 aimDirection;
-        // public Vector2 moveDirection;
+        public Vector2 aimDirection;
+        public Vector2 moveDirection;
 
         public bool IsUp(uint button)
         {

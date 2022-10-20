@@ -10,10 +10,13 @@ namespace TowerBomber
 {
     public class LevelManager : NetworkSceneManagerBase
     {
-        private Scene _loadedScene;
-        [SerializeField] private GameObject _mainSceneEssentials;
-
         public FusionLauncher launcher { get; set; }
+
+        private Scene _loadedScene;
+        private LevelBehaviour _currentLevel;
+
+        [SerializeField] private GameObject _mainSceneEssentials;
+        [SerializeField] private Character[] _characterPrefabs;
 
         protected override void Shutdown(NetworkRunner runner)
         {
@@ -54,7 +57,7 @@ namespace TowerBomber
                 for (int i = 0; i < PlayerManager.allPlayers.Count; i++)
                 {
                     Debug.Log($"de-spawning player character {i}:{PlayerManager.allPlayers[i]}");
-                    PlayerManager.allPlayers[i].DespawnCharacter();
+                    PlayerManager.allPlayers[i].state = Player.State.Despawned;
                     yield return new WaitForSeconds(0.1f);
                 }
 
@@ -99,11 +102,46 @@ namespace TowerBomber
 
             launcher.SetConnectionStatus(FusionLauncher.ConnectionStatus.Loaded, "");
 
+            _currentLevel = FindObjectOfType<LevelBehaviour>();
+
+            // Respawn with slight delay between each player
+            Debug.Log($"Respawning All Players");
+            for (int i = 0; i < PlayerManager.allPlayers.Count; i++)
+            {
+                Player player = PlayerManager.allPlayers[i];
+                Debug.Log($"Spawning Player {i}:{player} character");
+
+                player.transform.position = _currentLevel.GetPlayerSpawnPoint();
+                player.SpawnCharacter(GetCharacterPrefab(player.weaponType));
+                
+                if (player.Object.HasInputAuthority)
+                {
+                    _currentLevel.SetCameraToFollow(player.transform);
+                }
+
+                player.state = Player.State.Active;
+
+                yield return new WaitForSeconds(0.3f);
+            }
+
             Debug.Log($"Switched Scene from {prevScene} to {newScene} - loaded {sceneObjects.Count} scene objects");
             finished(sceneObjects);
 
             GameManager.playState = _loadedScene.buildIndex == 0 ? PlayState.LOBBY : PlayState.LEVEL;
             InputController.fetchInput = true;
+        }
+
+        private Character GetCharacterPrefab(Weapon.Type weaponType)
+        {
+            for (int j = 0; j < _characterPrefabs.Length; j++)
+            {
+                if (_characterPrefabs[j].weapon.type == weaponType)
+                {
+                    return _characterPrefabs[j];
+                }
+            }
+
+            return null;
         }
     }
 }

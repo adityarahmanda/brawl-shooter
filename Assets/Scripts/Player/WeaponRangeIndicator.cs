@@ -6,7 +6,7 @@ namespace TowerBomber
 {
     public class WeaponRangeIndicator : MonoBehaviour
     {
-        [SerializeField] private WeaponController _weaponController;
+        [SerializeField] private Player _player;
         [SerializeField] private LayerMask _whatIsEnvironment;
 
         private Canvas m_canvas;
@@ -23,25 +23,25 @@ namespace TowerBomber
         private void Start()
         {
             SetActive(false);
-            SetRange(_weaponController.range);
+            SetRange(_player.weapon.range);
 
             InputManager.i.AttackInput.onPointerDown.AddListener(OnPointerDownAttackInput);
             InputManager.i.AttackInput.onDrag.AddListener(OnDragAttackInput);
             InputManager.i.AttackInput.onPointerUp.AddListener(OnPointerUpAttackInput);
         }
 
-        private void LateUpdate()
+        private void Update()
         {
             if (!m_isCalculateRange) return;
 
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up), out hit, _weaponController.range, _whatIsEnvironment))
+            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up), out hit, _player.weapon.range, _whatIsEnvironment))
             {
                 SetRange(Vector3.Distance(transform.position, hit.point));
             }
             else
             {
-                SetRange(_weaponController.range);
+                SetRange(_player.weapon.range);
             }
         }
 
@@ -55,7 +55,6 @@ namespace TowerBomber
         {
             Quaternion targetRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y), Vector3.up);
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, targetRotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-
         }
 
         private void OnPointerUpAttackInput()

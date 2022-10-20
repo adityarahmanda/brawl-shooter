@@ -121,10 +121,10 @@ namespace TowerBomber
             {
                 Player player = networkObject.gameObject.GetComponent<Player>();
                 player.state = Player.State.InLobby;
-
-                WeaponController weaponController = networkObject.gameObject.GetComponent<WeaponController>();
-                LobbyManager.instance.UpdateWeapon(weaponController);
+                LobbyManager.instance.UpdatePlayerWeapon(player);
             }
+
+            GameManager.instance.OnPlayerJoinedAndExitLobby();
         }
 
         private void OnDespawnPlayer(NetworkRunner runner, PlayerRef playerref)
@@ -132,6 +132,8 @@ namespace TowerBomber
             Debug.Log($"Despawning Player {playerref}");
             Player player = PlayerManager.Get(playerref);
             player.TriggerDespawn();
+
+            GameManager.instance.OnPlayerJoinedAndExitLobby();
         }
 
         private bool GateUI(Panel ui)

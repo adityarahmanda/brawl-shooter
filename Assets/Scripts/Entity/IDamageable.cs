@@ -5,6 +5,6 @@ namespace TowerBomber
 {
     public interface IDamageable
     {
-        void ApplyDamage(Vector3 impulse, byte damage, PlayerRef source);
+        void ApplyDamage(byte damage, PlayerRef source);
     }
 }

@@ -5,20 +5,20 @@ namespace TowerBomber
 {
     public class BulletBar : ProgressBar
     {
+        [SerializeField] private Player _player;
         [SerializeField] private RawImage _progressBorderTile;
-        [SerializeField] private WeaponController _weaponController;
 
         protected override void Start()
         {
             base.Start();
             var uvRect = _progressBorderTile.uvRect;
-            _progressBorderTile.uvRect = new Rect(uvRect.x, uvRect.y, _weaponController.magazineSize, uvRect.height);
+            _progressBorderTile.uvRect = new Rect(uvRect.x, uvRect.y, _player.weapon.magazineSize, uvRect.height);
         }
 
         protected override void Update()
         {
             base.Update();
-            SetProgress(_weaponController.bulletsLeft, _weaponController.magazineSize);
+            SetProgress(_player.bulletsLeft, _player.weapon.magazineSize);
         }
     }
 }

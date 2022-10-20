@@ -1,5 +1,4 @@
 using UnityEngine;
-using WeaponType = TowerBomber.WeaponController.WeaponType;
 
 namespace TowerBomber
 {
@@ -14,7 +13,7 @@ namespace TowerBomber
             _animator = GetComponent<Animator>();
         }
 
-        public void UpdateWeapon(WeaponType weaponType)
+        public void UpdateWeapon(Weapon.Type weaponType)
         {
             foreach(WeaponShowcase weapon in _weapons)
             {
@@ -26,10 +25,10 @@ namespace TowerBomber
 
             switch (weaponType)
             {
-                case WeaponType.SingleShot:
+                case Weapon.Type.SingleShot:
                     _animator.SetTrigger("gun");
                     break;
-                case WeaponType.RapidShot:
+                case Weapon.Type.RapidShot:
                     _animator.SetTrigger("machineGun");
                     break;
             }

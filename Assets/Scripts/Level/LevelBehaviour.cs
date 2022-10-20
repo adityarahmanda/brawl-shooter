@@ -21,9 +21,18 @@ namespace TowerBomber
             _virtualCamera.Follow = objectToFollow;
         }
 
-        public SpawnPoint GetPlayerSpawnPoint(int id)
+        public Vector3 GetPlayerSpawnPoint()
         {
-            return _playerSpawnPoints[id].GetComponent<SpawnPoint>();
+            for (int i = 0; i < _playerSpawnPoints.Length; i++)
+            {
+                if (!_playerSpawnPoints[i].isOccupied)
+                {
+                    _playerSpawnPoints[i].isOccupied = true;
+                    return _playerSpawnPoints[i].transform.position;
+                }
+            }
+
+            return Vector3.zero;
         }
     }
 }

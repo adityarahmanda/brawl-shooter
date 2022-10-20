@@ -78,6 +78,18 @@ namespace TowerBomber
             }
         }
 
+        public void OnPlayerJoinedAndExitLobby()
+        {
+            if (playState != PlayState.LOBBY)
+                return;
+
+            // Reset stats and transition to level.
+            bool closeLobby = PlayerManager.allPlayers.Count == PlayerManager.MAX_PLAYERS;
+                
+            Runner.SessionInfo.IsOpen = !closeLobby;
+            Runner.SessionInfo.IsVisible = !closeLobby;
+        }
+
         // Transition from lobby to level
         public void OnAllPlayersReady()
         {
@@ -101,16 +113,27 @@ namespace TowerBomber
             LoadLevel(1);
         }
 
+        public void OnPlayerDead()
+        {
+            if (playState != PlayState.LEVEL)
+                return;
+
+            int playersleft = PlayerManager.GetPlayersAlive();
+            
+            Debug.Log($"Someone died - {playersleft} left");
+            if (playersleft <= 0)
+            {
+                // load main scene
+                LoadLevel(0);
+            }
+        }
 
         private void LoadLevel(int nextLevelIndex)
         {
             if (!Object.HasStateAuthority)
                 return;
 
-            // Reset lives and transition to level
-            //ResetLives();
-
-            //// Reset players ready state so we don't launch immediately
+            // Reset players _ready state so we don't launch immediately
             for (int i = 0; i < PlayerManager.allPlayers.Count; i++)
                 PlayerManager.allPlayers[i].ResetReady();
 

@@ -1,58 +1,107 @@
-using System.Threading.Tasks;
 using Fusion;
 using UnityEngine;
-using PlayState = TowerBomber.GameManager.PlayState;
 
 namespace TowerBomber
 {
     public class Player : NetworkBehaviour, IDamageable
     {
+        public const byte MAX_HEALTH = 100;
+
         public int playerID { get; private set; }
 
-        [Networked] 
-        public NetworkString<_128> playerName { get; set; }
-
         [Networked(OnChanged = nameof(OnReadyChanged))]
-        public NetworkBool ready { get; set; }
+        private NetworkBool _ready { get; set; }
+        public bool ready => _ready;
 
-        [Networked] 
-        public byte health { get; set; }
+        [Networked]
+        private byte _health { get; set; }
+        public byte health => _health;
 
-        public const byte MAX_HEALTH = 100;
+        [Networked]
+        private TickTimer _invulnerabilityTimer { get; set; }
 
         public enum State
         {
             InLobby,
-            Despawned,
             Active,
-            Dead
+            Dead,
+            Despawned
         }
 
-        [Networked(OnChanged = nameof(OnStateChanged)), SerializeField]
+        [Networked(OnChanged = nameof(OnStateChanged))]
         public State state { get; set; }
 
-        public bool isActivated => (gameObject.activeInHierarchy && state == State.Active);
+        [Networked(OnChanged = nameof(OnWeaponTypeChanged))]
+        private Weapon.Type _weaponType { get; set; }
+        public Weapon.Type weaponType => _weaponType;
+
+        [Networked]
+        private float _bulletsLeft { get; set; }
+        public float bulletsLeft => _bulletsLeft;
+
+        [Networked]
+        private Vector2 _moveDirection { get; set; }
+        public Vector2 moveDirection => _moveDirection;
+
+        [Networked]
+        private Vector2 _aimDirection { get; set; }
+        public Vector2 aimDirection => _aimDirection;
+
+        private Weapon _weapon;
+        public Weapon weapon => _weapon;
+
+        private Animator _animator;
+        private CharacterController _characterController;
+        private NetworkCharacterControllerPrototype _networkCharacterController;
+
+        private float _rotationOffset = .5f;
+        private bool _isReadyToShoot, _isShooting;
+
+        private Vector3 _shootingDirection;
+
+        public bool IsActivated => (gameObject.activeInHierarchy && state == State.Active);
 
         public static Player local { get; set; }
 
         public override void Spawned()
         {
             if (Object.HasInputAuthority)
-            {
                 local = this;
-                InputController.fetchInput = true;
-            }
+
+            _characterController = GetComponent<CharacterController>();
+            _networkCharacterController = GetComponent<NetworkCharacterControllerPrototype>();
 
             // Getting this here because it will revert to -1 if the player disconnects, but we still want to remember the Id we were assigned for clean-up purposes
             playerID = Object.InputAuthority;
-            ready = false;
+            _ready = false;
 
             PlayerManager.AddPlayer(this);
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
+            InputController.fetchInput = false;
             PlayerManager.RemovePlayer(this);
+        }
+
+        public void SpawnCharacter(Character characterPrefab)
+        {
+            Character character = Instantiate(characterPrefab, transform);
+            _animator = character.GetComponentInChildren<Animator>();
+            
+            CapsuleCollider collider = character.GetComponentInChildren<CapsuleCollider>();
+            _characterController.radius = collider.radius;
+            _characterController.height = collider.height;
+            _characterController.center = collider.center;
+
+            _weapon = character.weapon;
+            _bulletsLeft = _weapon.magazineSize;
+            _networkCharacterController.InterpolationTarget = character.interpolationRoot;
+
+            if (Object.HasInputAuthority)
+            {
+                // put code here
+            }
         }
 
         public async void TriggerDespawn()
@@ -67,44 +116,62 @@ namespace TowerBomber
             }
         }
 
-        public void SetPlayerState(State state)
-        {
-            state = state;
-        }
-
-        public void DespawnCharacter()
-        {
-            if (state == State.Dead)
-                return;
-
-            state = State.Despawned;
-        }
-
         public void ToggleReady()
         {
-            ready = !ready;
+            _ready = !_ready;
         }
 
         public void ResetReady()
         {
-            ready = false;
+            _ready = false;
+        }
+
+        public void ToggleWeaponType()
+        {
+            _weaponType = weaponType == Weapon.Type.SingleShot ? Weapon.Type.RapidShot : Weapon.Type.SingleShot;
         }
 
         public void ResetStats()
         {
             // Debug.Log($"Resetting player {playerID}, tick={Runner.Simulation.Tick}, timer={respawnTimer.IsRunning}:{respawnTimer.TargetTick}, life={life}, lives={lives}, hasAuthority={Object.HasStateAuthority} to state={state}");
-            health = MAX_HEALTH;
+            _health = MAX_HEALTH;
         }
 
-        public void ApplyDamage(Vector3 impulse, byte damage, PlayerRef source)
+        /// <summary>
+		/// Set the direction of movement and aim
+		/// </summary>
+		public void SetDirections(Vector2 moveDirection)
         {
-            if (!isActivated)
+            _moveDirection = moveDirection;
+            // _aimDirection = aimDirection;
+        }
+
+        public void Move()
+        {
+            if (!IsActivated)
                 return;
 
-            if (Object.HasStateAuthority)
+            _animator.SetBool("isMoving", _moveDirection.magnitude > 0);
+            _networkCharacterController.Move(new Vector3(_moveDirection.x, 0, _moveDirection.y));
+        }
+
+        public void ApplyDamage(byte damage, PlayerRef source)
+        {
+            if (!IsActivated || !_invulnerabilityTimer.Expired(Runner))
+                return;
+
+            if (damage >= _health)
             {
-                //_cc.Velocity += impulse / 10.0f; // Magic constant to compensate for not properly dealing with masses
-                //_cc.Move(Vector3.zero); // Velocity property is only used by CC when steering, so pretend we are, without actually steering anywhere
+                _health = 0;
+                state = State.Dead;
+
+                GameManager.instance.OnPlayerDead();
+            }
+            else
+            {
+                _health -= damage;
+                _invulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, 0.1f);
+                Debug.Log($"Player {playerID} took {damage} damage, health = {_health}");
             }
         }
 
@@ -118,20 +185,8 @@ namespace TowerBomber
         {
             switch (state)
             {
-                case State.Active:
-                    //_damageVisuals.CleanUpDebris();
-                    //_teleportIn.EndTeleport();
-                    break;
                 case State.Dead:
-                    //_deathExplosionInstance.transform.position = transform.position;
-                    //_deathExplosionInstance.SetActive(false); // dirty fix to reactivate the death explosion if the particlesystem is still active
-                    //_deathExplosionInstance.SetActive(true);
-
-                    //_visualParent.gameObject.SetActive(false);
-                    //_damageVisuals.OnDeath();
-                    break;
-                case State.Despawned:
-                    //_teleportOut.StartTeleport();
+                    _animator.SetTrigger("die");
                     break;
             }
         }
@@ -145,6 +200,17 @@ namespace TowerBomber
         public void OnReadyChanged()
         {
             LobbyManager.instance.UpdatePlayerLobbyStatus(this);
+        }
+
+        public static void OnWeaponTypeChanged(Changed<Player> changed)
+        {
+            if (changed.Behaviour)
+                changed.Behaviour.OnWeaponTypeChanged();
+        }
+
+        public void OnWeaponTypeChanged()
+        {
+            LobbyManager.instance.UpdatePlayerWeapon(this);
         }
     }
 }

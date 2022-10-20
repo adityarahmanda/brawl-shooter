@@ -3527,6 +3527,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowHierarchyWindowOverlay: 1
   _mainSceneEssentials: {fileID: 1400432426}
+  _characterPrefabs:
+  - {fileID: 5415418253023030848, guid: 6b359ece5b3e2854a947b22b4f86e7a9, type: 3}
+  - {fileID: 6579489915455816520, guid: 4f6d4efa80f480343b3b899439983a14, type: 3}
 --- !u!4 &2093215224
 Transform:
   m_ObjectHideFlags: 0

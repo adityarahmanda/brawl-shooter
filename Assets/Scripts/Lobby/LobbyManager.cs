@@ -112,13 +112,13 @@ namespace TowerBomber
                 _ready.text = Player.local.ready ? "CANCEL READY" : "READY";
         }
 
-        public void UpdateWeapon(WeaponController weaponController)
+        public void UpdatePlayerWeapon(Player player)
         {
             if (GameManager.playState != PlayState.LOBBY)
                 return;
 
-            if (weaponController.Object.HasInputAuthority)
-                _weaponSelector.UpdateWeapon(weaponController.weaponType);
+            if (player.Object.HasInputAuthority)
+                _weaponSelector.UpdateWeapon(player.weaponType);
         }
     }
 }
