@@ -1,10 +1,30 @@
 using UnityEngine;
 
-namespace TowerBomber
+namespace BrawlShooter
 {
     public class Character : MonoBehaviour
     {
-        public Transform interpolationRoot;
-        public Weapon weapon;
+        private Player _player;
+
+        public void SetPlayer(Player player)
+        {
+            _player = player;
+        }
+
+        public void Shoot()
+        {
+            if (_player == null)
+                return;
+
+            _player.Shoot();
+        }
+
+        public void CheckEndShoot()
+        {
+            if (_player == null)
+                return;
+
+            _player.CheckEndShoot();
+        }
     }
 }

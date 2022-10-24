@@ -1,8 +1,7 @@
-using Fusion;
-using TowerBomber.FusionHelpers;
 using UnityEngine;
+using Fusion;
 
-namespace TowerBomber
+namespace BrawlShooter
 {
     public class GameManager : NetworkBehaviour, IStateAuthorityChanged
     {
@@ -30,8 +29,9 @@ namespace TowerBomber
 
         public const ShutdownReason ShutdownReason_GameAlreadyRunning = (ShutdownReason)100;
 
-        private int m_lastSurvivedTime = 0;
-        public int lastSurvivedTime => m_lastSurvivedTime;
+        [Networked]
+        private int _winnerID { get; set; }
+        public int winnerID => _winnerID;
 
         private bool _restart;
 
@@ -86,14 +86,15 @@ namespace TowerBomber
             // Reset stats and transition to level.
             bool closeLobby = PlayerManager.allPlayers.Count == PlayerManager.MAX_PLAYERS;
                 
-            Runner.SessionInfo.IsOpen = !closeLobby;
-            Runner.SessionInfo.IsVisible = !closeLobby;
+            if(Runner.IsServer)
+                Runner.SessionInfo.IsOpen = !closeLobby;
+                Runner.SessionInfo.IsVisible = !closeLobby;
         }
 
         // Transition from lobby to level
         public void OnAllPlayersReady()
         {
-            if (playState != PlayState.LOBBY)
+            if (playState != PlayState.LOBBY || PlayerManager.allPlayers.Count < PlayerManager.MIN_PLAYERS)
                 return;
 
             Debug.Log("All players are ready");
@@ -106,36 +107,42 @@ namespace TowerBomber
             }
 
             // close and hide the session from matchmaking / lists. this demo does not allow late join.
-            Runner.SessionInfo.IsOpen = false;
-            Runner.SessionInfo.IsVisible = false;
+            if(Runner.IsServer)    
+                Runner.SessionInfo.IsOpen = false;
+                Runner.SessionInfo.IsVisible = false;
 
             // load level scene
             LoadLevel(1);
         }
 
-        public void OnPlayerDead()
+        public void OnPlayerDeadOrDisconnected()
         {
             if (playState != PlayState.LEVEL)
                 return;
 
             int playersleft = PlayerManager.GetPlayersAlive();
             
-            Debug.Log($"Someone died - {playersleft} left");
-            if (playersleft <= 0)
+            Debug.Log($"Someone died or disconnected - {playersleft} left");
+            if (playersleft <= 1)
             {
-                // load main scene
-                LoadLevel(0);
+                Player winner = playersleft == 0 ? null : PlayerManager.GetFirstAlivePlayer();
+                if (winner != null)
+                {
+                    SetWinner(winner.playerID);
+                    LoadLevel(0);
+                }
             }
+        }
+
+        public void SetWinner(int winnerID)
+        {
+            _winnerID = winnerID;
         }
 
         private void LoadLevel(int nextLevelIndex)
         {
             if (!Object.HasStateAuthority)
                 return;
-
-            // Reset players _ready state so we don't launch immediately
-            for (int i = 0; i < PlayerManager.allPlayers.Count; i++)
-                PlayerManager.allPlayers[i].ResetReady();
 
             _levelManager.LoadLevel(nextLevelIndex);
         }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 
-namespace TowerBomber.FusionHelpers
+namespace BrawlShooter.FusionHelpers
 {
     /// <summary>
     /// Example of a Fusion Object Pool.

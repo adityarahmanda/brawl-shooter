@@ -1,34 +1,52 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProgressBar : MonoBehaviour
+namespace BrawlShooter
 {
-    protected Transform m_mainCamera;
-    protected float m_currentValue, m_maxValue;
-
-    [SerializeField] protected bool isWorldSpace;
-    [SerializeField] protected Image m_progressImage;
-
-    protected virtual void Start() 
+    public class ProgressBar : MonoBehaviour
     {
-        m_mainCamera = Camera.main.transform;
-    }
+        [SerializeField] protected Transform _target;
 
-    protected virtual void Update() 
-    {
-        if(isWorldSpace)
+        protected Vector3 _offset;
+
+        public bool isWorldSpace;
+
+        [SerializeField] protected Image _progressImage;
+
+        protected float _currentValue, _maxValue;
+
+        protected virtual void Update()
         {
+            FollowTarget();
             LookAtCamera();
         }
-    }
 
-    protected virtual void LookAtCamera()
-    {
-        transform.LookAt(transform.position + m_mainCamera.rotation * Vector3.back, m_mainCamera.rotation * Vector3.down);
-    }
+        protected virtual void FollowTarget()
+        {
+            if (_target == null)
+                return;
 
-    public virtual void SetProgress(float currentValue, float maxValue)
-    {
-        m_progressImage.fillAmount = currentValue / maxValue;
+            transform.position = _target.position + _offset;
+        }
+
+        protected virtual void LookAtCamera()
+        {
+            if (!isWorldSpace)
+                return;
+
+            transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.back, Camera.main.transform.rotation * Vector3.down);
+        }
+
+        public virtual void SetTarget(Transform target, Vector3 offset)
+        {
+            _target = target;
+            _offset = offset;
+        }
+
+        public virtual void SetProgress(float currentValue, float maxValue)
+        {
+            _progressImage.fillAmount = currentValue / maxValue;
+        }
     }
 }

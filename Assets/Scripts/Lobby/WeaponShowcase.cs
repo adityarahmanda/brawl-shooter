@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TowerBomber
+namespace BrawlShooter
 {
     public class WeaponShowcase : MonoBehaviour
     {

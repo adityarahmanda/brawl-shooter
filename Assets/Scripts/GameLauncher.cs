@@ -1,10 +1,11 @@
 using Fusion;
 using TMPro;
 using UnityEngine;
-using TowerBomber.FusionHelpers;
-using PlayState = TowerBomber.GameManager.PlayState;
+using BrawlShooter.FusionHelpers;
+using DG.Tweening;
+using UnityEngine.SceneManagement;
 
-namespace TowerBomber
+namespace BrawlShooter
 {
     /// <summary>
     /// App entry point and main UI flow management.
@@ -14,13 +15,9 @@ namespace TowerBomber
         [SerializeField] private GameManager _gameManagerPrefab;
         [SerializeField] private Player _playerPrefab;
 
-        [SerializeField] private TextMeshProUGUI _progress;
-        [SerializeField] private TMP_InputField _room;
-        [SerializeField] private Panel _uiStart;
-        [SerializeField] private Panel _uiProgress;
-        [SerializeField] private Panel _uiRoom;
-        [SerializeField] private Panel _uiLobby;
-        [SerializeField] private Panel _uiGame;
+        [SerializeField] private TextMeshProUGUI _progressText;
+        [SerializeField] private TextMeshProUGUI _errorText;
+        [SerializeField] private TMP_InputField _roomInputField;
 
         private FusionLauncher.ConnectionStatus _status = FusionLauncher.ConnectionStatus.Disconnected;
         private GameMode _gameMode;
@@ -32,23 +29,19 @@ namespace TowerBomber
 
         private void Start()
         {
-            OnConnectionStatusUpdate(null, FusionLauncher.ConnectionStatus.Disconnected, "");
+            AudioManager.instance.PlayMusic("bgm", 0);
         }
 
         private void Update()
         {
-            if (_uiProgress.isShowing)
+            if (Input.GetKeyUp(KeyCode.Escape))
             {
-                if (Input.GetKeyUp(KeyCode.Escape))
+                NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+                if (runner != null && !runner.IsShutdown)
                 {
-                    NetworkRunner runner = FindObjectOfType<NetworkRunner>();
-                    if (runner != null && !runner.IsShutdown)
-                    {
-                        // Calling with destroyGameObject false because we do this in the OnShutdown callback on FusionLauncher
-                        runner.Shutdown(false);
-                    }
+                    // Calling with destroyGameObject false because we do this in the OnShutdown callback on FusionLauncher
+                    runner.Shutdown(false);
                 }
-                UpdateUI();
             }
         }
 
@@ -65,23 +58,19 @@ namespace TowerBomber
         private void SetGameMode(GameMode gamemode)
         {
             _gameMode = gamemode;
-            if (GateUI(_uiStart))
-                _uiRoom.SetVisible(true);
+            UIManager.instance.SwitchPanel(Panel.Type.EnterRoom);
         }
 
         public void OnEnterRoom()
         {
-            if (GateUI(_uiRoom))
-            {
-                FusionLauncher launcher = FindObjectOfType<FusionLauncher>();
-                if (launcher == null)
-                    launcher = new GameObject("Launcher").AddComponent<FusionLauncher>();
+            FusionLauncher launcher = FindObjectOfType<FusionLauncher>();
+            if (launcher == null)
+                launcher = new GameObject("Launcher").AddComponent<FusionLauncher>();
 
-                LevelManager lm = FindObjectOfType<LevelManager>();
-                lm.launcher = launcher;
+            LevelManager lm = FindObjectOfType<LevelManager>();
+            lm.launcher = launcher;
 
-                launcher.Launch(_gameMode, _room.text, lm, OnConnectionStatusUpdate, OnSpawnWorld, OnSpawnPlayer, OnDespawnPlayer);
-            }
+            launcher.Launch(_gameMode, _roomInputField.text, lm, OnConnectionStatusUpdate, OnSpawnWorld, OnSpawnPlayer, OnDespawnPlayer);
         }
 
         private void OnConnectionStatusUpdate(NetworkRunner runner, FusionLauncher.ConnectionStatus status, string reason)
@@ -92,7 +81,7 @@ namespace TowerBomber
             Debug.Log(status);
 
             _status = status;
-            UpdateUI();
+            UpdateProgressUI(reason);
         }
 
         private void OnSpawnWorld(NetworkRunner runner)
@@ -108,7 +97,7 @@ namespace TowerBomber
 
         private void OnSpawnPlayer(NetworkRunner runner, PlayerRef playerref)
         {
-            if (GameManager.playState != PlayState.LOBBY)
+            if (GameManager.playState != GameManager.PlayState.LOBBY)
             {
                 Debug.Log("Not Spawning Player - game has already started");
                 return;
@@ -121,7 +110,6 @@ namespace TowerBomber
             {
                 Player player = networkObject.gameObject.GetComponent<Player>();
                 player.state = Player.State.InLobby;
-                LobbyManager.instance.UpdatePlayerWeapon(player);
             }
 
             GameManager.instance.OnPlayerJoinedAndExitLobby();
@@ -136,48 +124,41 @@ namespace TowerBomber
             GameManager.instance.OnPlayerJoinedAndExitLobby();
         }
 
-        private bool GateUI(Panel ui)
+        private void UpdateProgressUI(string reason)
         {
-            if (!ui.isShowing)
-                return false;
-            ui.SetVisible(false);
-            return true;
-        }
-
-        private void UpdateUI()
-        {
-            bool intro = false;
             bool progress = false;
-            bool running = false;
+            bool error = false;
 
             switch (_status)
             {
-                case FusionLauncher.ConnectionStatus.Disconnected:
-                    intro = true;
-                    break;
                 case FusionLauncher.ConnectionStatus.Failed:
-                    intro = true;
+                    error = true;
                     break;
                 case FusionLauncher.ConnectionStatus.Connecting:
-                    _progress.text = "Connecting";
+                    _progressText.text = "Connecting";
                     progress = true;
                     break;
-                case FusionLauncher.ConnectionStatus.Connected:
-                    running = true;
+                case FusionLauncher.ConnectionStatus.Disconnected:
+                    error = true;
                     break;
                 case FusionLauncher.ConnectionStatus.Loading:
-                    _progress.text = "Loading";
+                    _progressText.text = "Loading";
                     progress = true;
-                    break;
-                case FusionLauncher.ConnectionStatus.Loaded:
-                    running = true;
                     break;
             }
 
-            _uiStart.SetVisible(intro);
-            _uiProgress.SetVisible(progress);
-            _uiLobby.SetVisible(GameManager.playState == PlayState.LOBBY && running);
-            _uiGame.SetVisible(GameManager.playState == PlayState.LEVEL && running);
+            if (progress)
+            {
+                UIManager.instance.SwitchPanel(Panel.Type.Progress);
+                return;
+            }
+
+            if (error)
+            {
+                _errorText.text = "Error - " + reason;
+                UIManager.instance.SwitchPanel(Panel.Type.Error);
+                return;
+            }
         }
     }
 }

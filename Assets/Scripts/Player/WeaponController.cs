@@ -1,8 +1,8 @@
 using UnityEngine;
 using Fusion;
-using PlayState = TowerBomber.GameManager.PlayState;
+using PlayState = BrawlShooter.GameManager.PlayState;
 
-namespace TowerBomber
+namespace BrawlShooter
 {
     public class WeaponController : NetworkBehaviour
     {

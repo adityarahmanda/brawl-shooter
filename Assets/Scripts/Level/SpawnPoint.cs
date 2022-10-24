@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace TowerBomber
+namespace BrawlShooter
 {
     /// <summary>
     /// SpawnPoint is used by the LevelBehaviour to figure out where it can spawn things.

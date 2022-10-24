@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
-using PlayState = TowerBomber.GameManager.PlayState;
+using UnityEngine.SceneManagement;
+using PlayState = BrawlShooter.GameManager.PlayState;
 
-namespace TowerBomber.FusionHelpers
+namespace BrawlShooter.FusionHelpers
 {
     /// <summary>
     /// Small helper that provides a simple world/player pattern for launching Fusion
@@ -14,11 +15,16 @@ namespace TowerBomber.FusionHelpers
     {
         private NetworkRunner _runner;
         private Action<NetworkRunner, ConnectionStatus, string> _connectionCallback;
-        [SerializeField] private ConnectionStatus _status;
+        
+        private ConnectionStatus _status;
+        public ConnectionStatus status => _status;
+
         private FusionObjectPoolRoot _pool;
         private Action<NetworkRunner> _spawnWorldCallback;
         private Action<NetworkRunner, PlayerRef> _spawnPlayerCallback;
         private Action<NetworkRunner, PlayerRef> _despawnPlayerCallback;
+
+        private LevelManager _levelManager;
 
         public enum ConnectionStatus
         {
@@ -28,6 +34,11 @@ namespace TowerBomber.FusionHelpers
             Connected,
             Loading,
             Loaded
+        }
+
+        private void Awake()
+        {
+            _levelManager = FindObjectOfType<LevelManager>(true);
         }
 
         public async void Launch(GameMode mode, string room,
@@ -58,6 +69,7 @@ namespace TowerBomber.FusionHelpers
             {
                 GameMode = mode,
                 SessionName = room,
+                PlayerCount = 2,
                 ObjectPool = _pool,
                 SceneManager = sceneLoader
             });
@@ -82,6 +94,7 @@ namespace TowerBomber.FusionHelpers
         {
             Debug.Log("Connected to server");
             SetConnectionStatus(ConnectionStatus.Connected, "");
+            UIManager.instance.SwitchPanel(Panel.Type.Lobby);
         }
 
         public void OnDisconnectedFromServer(NetworkRunner runner)
@@ -99,6 +112,7 @@ namespace TowerBomber.FusionHelpers
         {
             Debug.Log($"Connect failed {reason}");
             SetConnectionStatus(ConnectionStatus.Failed, reason.ToString());
+            UIManager.instance.SwitchPanel(Panel.Type.Intro);
         }
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef playerref)
@@ -108,6 +122,7 @@ namespace TowerBomber.FusionHelpers
                 Debug.Log("Hosted Mode - Spawning Player");
                 InstantiatePlayer(runner, playerref);
                 SetConnectionStatus(ConnectionStatus.Connected, "");
+                UIManager.instance.SwitchPanel(Panel.Type.Lobby);
             }
         }
 

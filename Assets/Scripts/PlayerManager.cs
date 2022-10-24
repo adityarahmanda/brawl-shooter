@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-using PlayState = TowerBomber.GameManager.PlayState;
 
-namespace TowerBomber
+namespace BrawlShooter
 {
     public class PlayerManager : MonoBehaviour
     {
@@ -12,7 +11,8 @@ namespace TowerBomber
 
         private static Queue<Player> _playerQueue = new Queue<Player>();
 
-        public static int MAX_PLAYERS = 3;
+        public static int MIN_PLAYERS = 2;
+        public static int MAX_PLAYERS = 2;
 
         public static void HandleNewPlayers()
         {
@@ -20,7 +20,7 @@ namespace TowerBomber
             {
                 Player player = _playerQueue.Dequeue();
 
-                if (GameManager.playState == PlayState.LOBBY)
+                if (GameManager.playState == GameManager.PlayState.LOBBY)
                     LobbyManager.instance.AddPlayer(player);
             }
         }
@@ -35,6 +35,17 @@ namespace TowerBomber
             }
 
             return playersAlive;
+        }
+
+        public static Player GetFirstAlivePlayer()
+        {
+            for (int i = 0; i < _allPlayers.Count; i++)
+            {
+                if (_allPlayers[i].IsActivated)
+                    return _allPlayers[i];
+            }
+
+            return null;
         }
 
         public static void AddPlayer(Player player)
@@ -62,10 +73,6 @@ namespace TowerBomber
                 return;
 
             Debug.Log("Player Removed " + player.playerID);
-
-            if (GameManager.playState == GameManager.PlayState.LOBBY)
-                LobbyManager.instance.RemovePlayer(player);
-
             _allPlayers.Remove(player);
         }
 
@@ -75,6 +82,17 @@ namespace TowerBomber
             allPlayers.Clear();
 
             Player.local = null;
+        }
+
+        public static bool GetAllPlayersReady()
+        {
+            for (int i = 0; i < _allPlayers.Count; i++)
+            {
+                if (!_allPlayers[i].IsReady)
+                    return false;
+            }
+
+            return true;
         }
 
         public static Player GetPlayerFromID(int id)

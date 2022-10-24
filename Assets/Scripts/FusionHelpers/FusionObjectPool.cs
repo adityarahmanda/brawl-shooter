@@ -3,7 +3,7 @@ using Fusion;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace TowerBomber.FusionHelpers
+namespace BrawlShooter.FusionHelpers
 {
     /// <summary>
     /// Pool of all free instances of a single type of NetworkObject's

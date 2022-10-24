@@ -5,8 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - FxTemporaire
-  - Enemy
-  - Tower
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -15,8 +14,8 @@ TagManager:
   - Water
   - UI
   - Player
-  - Tower
-  - Ground
+  - MouseRayCollider
+  - 
   - 
   - 
   - 

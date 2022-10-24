@@ -1,24 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
-namespace TowerBomber
+namespace BrawlShooter
 {
     public class BulletBar : ProgressBar
     {
-        [SerializeField] private Player _player;
-        [SerializeField] private RawImage _progressBorderTile;
+        [SerializeField] 
+        private RawImage _progressBorderTile;
 
-        protected override void Start()
+        public void SetMaxBullets(int maxBullets)
         {
-            base.Start();
             var uvRect = _progressBorderTile.uvRect;
-            _progressBorderTile.uvRect = new Rect(uvRect.x, uvRect.y, _player.weapon.magazineSize, uvRect.height);
+            _progressBorderTile.uvRect = new Rect(uvRect.x, uvRect.y, maxBullets, uvRect.height);
         }
 
-        protected override void Update()
-        {
-            base.Update();
-            SetProgress(_player.bulletsLeft, _player.weapon.magazineSize);
-        }
     }
 }

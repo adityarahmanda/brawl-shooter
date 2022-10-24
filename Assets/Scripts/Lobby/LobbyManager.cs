@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using PlayState = TowerBomber.GameManager.PlayState;
 
-namespace TowerBomber
+namespace BrawlShooter
 {
     public class LobbyManager : MonoBehaviour
     {
@@ -11,12 +10,8 @@ namespace TowerBomber
 
         [SerializeField] private Transform _lobbyStatusParent;
         [SerializeField] private LobbyStatus _lobbyStatusPrefab;
-
         [SerializeField] private WeaponSelector _weaponSelector;
-        public WeaponSelector weaponSelector => weaponSelector;
-
-        [SerializeField] private TextMeshProUGUI _ready;
-        private bool _allPlayersReady;
+        [SerializeField] private TextMeshProUGUI _readyText;
 
         private static Dictionary<Player, LobbyStatus> _lobbyStatuses = new Dictionary<Player, LobbyStatus>();
 
@@ -28,30 +23,17 @@ namespace TowerBomber
                 Destroy(this);
         }
 
-        private void Update()
-        {
-            if (_allPlayersReady || GameManager.playState == PlayState.LEVEL)
-                return;
-
-            _allPlayersReady = PlayerManager.allPlayers.Count >= 1;
-            foreach (Player player in PlayerManager.allPlayers)
-            {
-                if (!player.ready)
-                    _allPlayersReady = false;
-            }
-
-            if (_allPlayersReady)
-            {
-                GameManager.instance.OnAllPlayersReady();
-                ClearLobby();
-            }
-        }
-
         public void AddPlayer(Player player)
         {
             LobbyStatus lobbyStatus = Instantiate(_lobbyStatusPrefab, _lobbyStatusParent);
             lobbyStatus.Init(player);
             _lobbyStatuses.Add(player, lobbyStatus);
+
+            if (player.Object.HasInputAuthority)
+            {
+                _readyText.text = "READY";
+                _weaponSelector.UpdateWeapon(player.weaponType);
+            }
         }
 
         public void RemovePlayer(Player player)
@@ -64,24 +46,8 @@ namespace TowerBomber
             _lobbyStatuses.Remove(player);
         }
 
-        public void ClearLobby()
-        {
-            if (_lobbyStatuses.Count <= 0)
-                return;
-
-            Debug.Log("Clearing Lobby");
-            foreach (LobbyStatus lobbyStatus in _lobbyStatuses.Values)
-            {
-                Destroy(lobbyStatus.gameObject);
-            }
-            _lobbyStatuses.Clear();
-        }
-
         public void ChangeWeapon()
         {
-            if (GameManager.playState != PlayState.LOBBY)
-                return;
-
             foreach (InputController ic in FindObjectsOfType<InputController>())
             {
                 if (ic.Object.HasInputAuthority)
@@ -91,9 +57,6 @@ namespace TowerBomber
 
         public void Ready()
         {
-            if (GameManager.playState != PlayState.LOBBY)
-                return;
-
             foreach (InputController ic in FindObjectsOfType<InputController>())
             {
                 if (ic.Object.HasInputAuthority)
@@ -103,20 +66,14 @@ namespace TowerBomber
 
         public void UpdatePlayerLobbyStatus(Player player)
         {
-            if (GameManager.playState != PlayState.LOBBY)
-                return;
-
             _lobbyStatuses[player].UpdateStatus();
 
             if (player.Object.HasInputAuthority)
-                _ready.text = Player.local.ready ? "CANCEL READY" : "READY";
+                _readyText.text = Player.local.IsReady ? "CANCEL READY" : "READY";
         }
 
         public void UpdatePlayerWeapon(Player player)
         {
-            if (GameManager.playState != PlayState.LOBBY)
-                return;
-
             if (player.Object.HasInputAuthority)
                 _weaponSelector.UpdateWeapon(player.weaponType);
         }
