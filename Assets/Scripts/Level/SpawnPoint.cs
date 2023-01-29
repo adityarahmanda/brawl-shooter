@@ -1,14 +1,8 @@
+using Fusion;
 using UnityEditor;
 using UnityEngine;
 
 namespace BrawlShooter
 {
-    /// <summary>
-    /// SpawnPoint is used by the LevelBehaviour to figure out where it can spawn things.
-    /// There is nothing Fusion specific about this.
-    /// </summary>
-    public class SpawnPoint : MonoBehaviour
-    {
-        public bool isOccupied;
-    }
+    public class SpawnPoint : ContextBehaviour { }
 }

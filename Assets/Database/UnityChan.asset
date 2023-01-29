@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9337b4d91f177847a1b18cb45640924, type: 3}
+  m_Name: UnityChan
+  m_EditorClassIdentifier: 
+  characterName: Unity-Chan
+  characterPrefab: {fileID: 3047761599932912499, guid: 0805382693f499b4490787df507a17ac, type: 3}
+  agentPrefab: {fileID: 2024232173837241982, guid: 26922d475c79ab448ad530831d3b99c7, type: 3}

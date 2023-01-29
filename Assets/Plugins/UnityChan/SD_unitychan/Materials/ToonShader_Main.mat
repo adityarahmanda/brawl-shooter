@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ToonShader_Main
+  m_Shader: {fileID: 4800000, guid: 28819dab6f9f61e4d939c3960350f842, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _ISKAGE_NORMAL_ON
+  - _SEGMENTED_ON
+  m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _KageTexture:
+        m_Texture: {fileID: 2800000, guid: e22da664ebab32d4ca5bea4d43b0ff43, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 38b0fd74fd3c31140bf78e39b7db1534, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Outline_sampler:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SetKage:
+        m_Texture: {fileID: 2800000, guid: 3c9fe7e9874cda340a502f5fd92961bb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_8288:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _setKage:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AmbientCol: 0.8
+    - _AmbientLightPower: 0.5
+    - _BaseTexContrast: 0.38
+    - _BaseTexPower: 0.34
+    - _Blightness: 0.67
+    - _Clipped: 0
+    - _ColBright: 0
+    - _ColIntense: 1
+    - _Contrast: 0.12
+    - _Gloss: 0
+    - _KageTexPower: 2
+    - _Kage_Normal: 0
+    - _Lumin: 0
+    - _MaxLight: 1
+    - _Max_Outline_Width: 0.005
+    - _Metallic: 0
+    - _MinLight: 0.4
+    - _Mix_BaseTexture: 0.351
+    - _Mix_KageTexture: 0.355
+    - _Offset: 1
+    - _OtlWidth: 0
+    - _Outline: 0.003
+    - _Outline_Power: 0.6
+    - _Outline_Width: 5
+    - _Rim_Sharpness: 10
+    - _Segmented: 1
+    - _ShadePower: 0.43
+    - _ShnIntense: 0.3
+    - _ShnOverlap: 0
+    - _ShnRange: 0.01
+    - _ShnSmooth: 0.5
+    - _Steps: 4
+    - _StpSmooth: 0.2
+    - _TessLevel: 1
+    - _isKage_Normal: 1
+    - _isRim_Normal: 0
+    - _node_183: 0.51
+    - _node_1959: 1
+    - _node_224: 0
+    - _node_9155: 0
+    m_Colors:
+    - _Color: {r: 0.3019608, g: 0.38431376, b: 0.62352943, a: 1}
+    - _Line_Color: {r: 0.54509807, g: 0.54509807, b: 0.54509807, a: 1}
+    - _OtlColor: {r: 0.44705886, g: 0.13725491, b: 0.019607844, a: 1}
+    - _Rim_Color: {r: 0.60294116, g: 0.60294116, b: 0.60294116, a: 1}
+    - _ShnColor: {r: 0.8207547, g: 0.7235839, b: 0.5536223, a: 1}
+  m_BuildTextureStacks: []
