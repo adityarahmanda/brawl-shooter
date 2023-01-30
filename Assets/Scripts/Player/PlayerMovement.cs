@@ -23,12 +23,12 @@ namespace BrawlShooter
         {
             if (IsProxy || !Runner.IsForward) return;
 
-            Character.NetworkAnimator.Animator.SetBool("isMoving", moveDirection.magnitude > 0);
+            Agent.NetworkAnimator.Animator.SetBool("isMoving", moveDirection.magnitude > 0);
         }
 
         public void Move()
         {
-            Character.NetworkCharacterController.Move(new Vector3(moveDirection.x, 0, moveDirection.y));
+            Agent.NetworkCharacterController.Move(new Vector3(moveDirection.x, 0, moveDirection.y));
         }
     }
 }

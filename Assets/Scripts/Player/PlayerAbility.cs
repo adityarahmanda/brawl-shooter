@@ -5,12 +5,12 @@ namespace BrawlShooter
 {
     public abstract class PlayerAbility : NetworkContextBehaviour
     {
-        public Player Owner => Character.Owner;
-        public PlayerAgent Character { get; protected set; }
+        public Player Owner => Agent.Owner;
+        public PlayerAgent Agent { get; protected set; }
 
-        public void Initialize(PlayerAgent character)
+        public void Initialize(PlayerAgent agent)
         {
-            Character = character;
+            Agent = agent;
         }
 
         public virtual void OnProcessInput(InputContext context) { }

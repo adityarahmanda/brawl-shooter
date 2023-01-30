@@ -9,22 +9,22 @@ namespace BrawlShooter
         public Player Owner { get; private set; }
         public CharacterData CharacterData => Owner.CharacterData;
 
-        [Networked(OnChanged = nameof(OnHealthChanged))]
+        [Networked]
         public byte health { get; set; } = 100;
+        public byte maxHealth = 100;
 
         [Networked]
         private TickTimer _invulnerabilityTimer { get; set; }
+        public float invulnerabilityTime = 0.1f;
 
         public NetworkMecanimAnimator NetworkAnimator { get; private set; }
         public NetworkCharacterControllerPrototype NetworkCharacterController { get; private set; }
         public NetworkInputController NetworkInput { get; private set; }
 
         private PlayerAbility[] _abilities;
-        
-        private ProgressBar _healthbar;
-        
-        public const byte MAX_HEALTH = 100;
-        private const float INVULNERABILITY_TIME = 0.1f;
+
+        [SerializeField]
+        private ProgressBar _healthBar;
 
         private void Awake()
         {
@@ -51,19 +51,13 @@ namespace BrawlShooter
             {
                 ability.Initialize(this);
             }
+
+            ResetStats();
         }
 
-        public void TriggerDespawn()
+        public override void FixedUpdateNetwork()
         {
-            if (Object == null) { return; }
-
-            if (Object.HasStateAuthority)
-                Runner.Despawn(Object);
-        }
-
-        public void ResetStats()
-        {
-            health = MAX_HEALTH;
+            UpdateHealthBar();
         }
 
         public void ProcessInput(InputContext context)
@@ -74,6 +68,13 @@ namespace BrawlShooter
             }
         }
 
+        public void UpdateHealthBar()
+        {
+            if (_healthBar == null) return;
+
+            _healthBar.fillAmount = health.ToFloat() / maxHealth.ToFloat();
+        }
+
         public void ApplyDamage(byte damage, PlayerRef source)
         {
             if (!_invulnerabilityTimer.ExpiredOrNotRunning(Runner))
@@ -82,27 +83,17 @@ namespace BrawlShooter
             if (damage >= health)
             {
                 health = 0;
-                // game event
             }
             else
             {
                 health -= damage;
-                _invulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, INVULNERABILITY_TIME);
+                _invulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, invulnerabilityTime);
             }
         }
 
-        public static void OnHealthChanged(Changed<PlayerAgent> changed)
+        public void ResetStats()
         {
-            if (changed.Behaviour)
-                changed.Behaviour.OnHealthChanged();
-        }
-
-        public void OnHealthChanged()
-        {
-            if (_healthbar == null)
-                return;
-
-            _healthbar.SetProgress(health, MAX_HEALTH);
+            health = maxHealth;
         }
 
         public void SetOwner(Player player) => Owner = player;

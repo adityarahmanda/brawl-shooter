@@ -36,22 +36,18 @@ namespace BrawlShooter
         {
             _moveDelta = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-            Vector3 mousePos = Input.mousePosition;
-
             RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(mousePos);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            Vector3 mouseCollisionPoint = Vector3.zero;
-
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _aimMask))
+            Vector3 aimDirection = Vector3.zero;
+            if (Physics.Raycast(ray, out hit, 100f, _aimMask))
             {
                 if (hit.collider != null)
                 {
-                    mouseCollisionPoint = hit.point;
+                    aimDirection = hit.point - transform.position;
                 }
             }
 
-            Vector3 aimDirection = mouseCollisionPoint - transform.position;
             _aimDelta = new Vector2(aimDirection.x, aimDirection.z);
         }
 

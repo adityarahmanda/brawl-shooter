@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 33740650818424486}
   - component: {fileID: 23171872687087456}
   - component: {fileID: 8796489668520993420}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: ForestGround02
   m_TagString: Untagged
   m_Icon: {fileID: 0}

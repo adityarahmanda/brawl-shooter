@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: -3789761059269797637}
   - component: {fileID: 869275573}
   - component: {fileID: 869275574}
+  - component: {fileID: 1304137248}
+  - component: {fileID: 1304137249}
   m_Layer: 0
   m_Name: Network Launcher
   m_TagString: Untagged
@@ -50,7 +52,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dontDestroyOnLoad: 1
-  players: []
+  gameplaySceneName: GameplayScene
+  Players: []
   playerPrefab:
     RawGuidValue: b8c4fcd57c0b9f944aea813483fbbad2
 --- !u!114 &6245754189328140871
@@ -114,3 +117,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca9ced7a0858f9b4cbe6bf177b5ac757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1304137248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6245754189328140867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1032120742, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1304137249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6245754189328140867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -49887739, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BVHDepth: 0
+  BVHNodes: 0
+  TotalHitboxes: 0

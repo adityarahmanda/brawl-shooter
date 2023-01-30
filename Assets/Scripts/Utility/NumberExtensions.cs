@@ -61,5 +61,10 @@ namespace BrawlShooter
                 return flags &= ~(1 << bit);
             }
         }
+
+        public static float ToFloat(this byte value)
+        {
+            return (float)value / 0x100;
+        }
     }
 }

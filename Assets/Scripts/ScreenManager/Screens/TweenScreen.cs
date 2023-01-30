@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using DG.Tweening;
 
 namespace BrawlShooter
 {
@@ -10,12 +11,12 @@ namespace BrawlShooter
         [Header("Show Animation")]
         public AnimationType showAnimation = AnimationType.Fade;
         public float showDuration = 0.5f;
-        public LeanTweenType showEase = LeanTweenType.easeOutCirc;
+        public Ease showEase = Ease.OutCirc;
 
         [Header("Hide Animation")]
         public AnimationType hideAnimation = AnimationType.Fade;
         public float hideDuration = 0.5f;
-        public LeanTweenType hideEase = LeanTweenType.easeInCirc;
+        public Ease hideEase = Ease.InCirc;
 
         private void Start()
         {
@@ -73,17 +74,12 @@ namespace BrawlShooter
         {
             if (showAnimation == AnimationType.Fade)
             {
-                LeanTween.alphaCanvas(canvasGroup, 1f, showDuration)
-                         .setFrom(0f).setEase(showEase)
-                         .setOnComplete(base.OnAnimationIn);
+                canvasGroup.DOFade(1f, showDuration).From(0f).SetEase(showEase).OnComplete(base.OnAnimationIn);
             }
             else
             {
                 Vector2 fromPos = GetMoveFromPosition(showAnimation);
-
-                LeanTween.moveLocal(this.transform.gameObject, Vector2.zero, showDuration)
-                         .setFrom(fromPos).setEase(showEase)
-                         .setOnComplete(base.OnAnimationIn);
+                transform.DOLocalMove(Vector2.zero, showDuration).From(fromPos).SetEase(showEase).OnComplete(base.OnAnimationIn);
             }
         }
 
@@ -91,17 +87,12 @@ namespace BrawlShooter
         {
             if (hideAnimation == AnimationType.Fade)
             {
-                LeanTween.alphaCanvas(canvasGroup, 0f, hideDuration)
-                         .setFrom(1f).setEase(hideEase)
-                         .setOnComplete(base.OnAnimationOut);
+                canvasGroup.DOFade(0f, hideDuration).From(1f).SetEase(hideEase).OnComplete(base.OnAnimationOut);
             }
             else
             {
                 Vector2 toPos = GetMoveToPosition(hideAnimation);
-
-                LeanTween.moveLocal(this.transform.gameObject, toPos, hideDuration)
-                         .setFrom(Vector2.zero).setEase(hideEase)
-                         .setOnComplete(base.OnAnimationOut);
+                transform.DOLocalMove(toPos, hideDuration).From(Vector2.zero).SetEase(hideEase).OnComplete(base.OnAnimationOut);
             }
         }
     }
