@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BrawlShooter
 {
-    public class Character : ContextBehaviour
+    public class Character : MonoBehaviour
     {
         public CharacterData data;
     }

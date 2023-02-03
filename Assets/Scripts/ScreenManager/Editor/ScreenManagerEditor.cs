@@ -242,8 +242,6 @@ namespace BrawlShooter.Editors
             // Default Screen
             if (ScreenManager.defaultScreen != null)
             {
-                EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ScreenManager.dontDestroyOnLoad)));
-
                 GUILayout.Space(20);
                 GUILayout.Label("Default Screen :");
                 bool isEnabled = IsTestingScreen(ScreenManager.defaultScreen);

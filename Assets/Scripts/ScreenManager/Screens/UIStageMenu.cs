@@ -1,34 +1,38 @@
 using Fusion;
 using Lean.Pool;
 using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityFx.Outline;
+using Unity.VisualScripting;
 
 namespace BrawlShooter
 {
-    public class UIStageMenu : BaseScreen
+    public class UIStageMenu : MonoBehaviour
     {
         [Header("Stage Settings")]
-        public CharacterData[] characterDatas;
         public Transform CharactersRoot;
 
         [SerializeField]
         private TextMeshProUGUI _characterNameText;
+        private OutlineEffect _outlineEffect;
 
         private int _selectedIndex;
         private Character[] _characters;
 
-        public Character SelectedCharacter => _characters != null ? _characters[_selectedIndex] : null;
+        private void Awake()
+        {
+            _outlineEffect = Camera.main.GetComponent<OutlineEffect>();
+        }
 
         private void OnEnable()
         {
-            EventManager.AddEventListener<GameStartedEvent>(OnGameStarted);
-            EventManager.AddEventListener<PlayerSelectCharacterEvent>(OnPlayerSelectCharacter);
+            EventManager.AddEventListener<PlayerSpawnedEvent>(OnPlayerSpawned);
         }
 
         private void OnDisable()
         {
-            EventManager.RemoveEventListener<GameStartedEvent>(OnGameStarted);
-            EventManager.RemoveEventListener<PlayerSelectCharacterEvent>(OnPlayerSelectCharacter);
+            EventManager.RemoveEventListener<PlayerSpawnedEvent>(OnPlayerSpawned);
         }
 
         private void Start()
@@ -38,10 +42,13 @@ namespace BrawlShooter
 
         public void Initialize()
         {
+            var characterDatas = GlobalSettings.Instance.database.characterDatas;
+
             _characters = new Character[characterDatas.Length];
             for (int i = 0; i < characterDatas.Length; i++)
             {
                 var character = LeanPool.Spawn(characterDatas[i].characterPrefab, CharactersRoot);
+                _outlineEffect.AddGameObject(character.gameObject);
                 _characters[i] = character;
             }
 
@@ -72,16 +79,18 @@ namespace BrawlShooter
 
                 _characters[i].gameObject.SetActive(i == index);
             }
+
+            if(NetworkManager.Instance.localPlayer != null)
+            {
+                NetworkManager.Instance.localPlayer.RPC_SetSelectedCharacterId(_characters[_selectedIndex].data.Id);
+            }
         }
 
-        public void OnGameStarted(GameStartedEvent e)
+        private void OnPlayerSpawned(PlayerSpawnedEvent e)
         {
-            Local.RPC_SetCharacterData(_selectedIndex);
-        }
+            if (NetworkManager.Instance.IsLocalPlayer(e.player) == false) return;
 
-        public void OnPlayerSelectCharacter(PlayerSelectCharacterEvent e)
-        {
-            e.player.CharacterData = _characters[e.player.selectedCharacterIndex].data;
+            NetworkManager.Instance.localPlayer.RPC_SetSelectedCharacterId(_characters[_selectedIndex].data.Id);
         }
     }
 }

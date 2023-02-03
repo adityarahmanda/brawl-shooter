@@ -709,7 +709,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dontDestroyOnLoad: 0
-  dontDestroyOnLoad: 1
   defaultScreen: UI - Main Menu
   allScreens:
   - objectGuid: d319a33d60113354486dc842883e6cb1

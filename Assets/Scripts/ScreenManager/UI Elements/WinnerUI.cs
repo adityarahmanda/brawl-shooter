@@ -13,7 +13,7 @@ namespace BrawlShooter
 
         public void SetWinner(Player player)
         {
-            winnerText.text = "Player " + player.id + " Wins";
+            winnerText.text = player.username + " Wins";
         }
 
         public void SetReturnToLobbyCountdown(int countdown)

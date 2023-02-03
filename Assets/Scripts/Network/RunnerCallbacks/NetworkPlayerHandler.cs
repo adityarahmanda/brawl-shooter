@@ -5,19 +5,20 @@ namespace BrawlShooter
 {
     public class NetworkPlayerHandler : NetworkRunnerCallbacks
     {
-        public override void OnPlayerJoined(NetworkRunner runner, PlayerRef playerref)
+        public override void OnPlayerJoined(NetworkRunner runner, PlayerRef playerRef)
         {
             if (!runner.IsServer) return;
 
-            runner.Spawn(Launcher.playerPrefab, Vector3.zero, Quaternion.identity, playerref, OnBeforeSpawned);
+            var player = runner.Spawn(NetworkManager.Instance.playerPrefab, Vector3.zero, Quaternion.identity, playerRef, OnBeforeSpawned);
+            runner.SetPlayerObject(playerRef, player);
 
             void OnBeforeSpawned(NetworkRunner runner, NetworkObject networkObject)
             {
-                networkObject.gameObject.name = playerref.ToString();
-                networkObject.transform.parent = Launcher.transform;
+                networkObject.gameObject.name = playerRef.ToString();
+                DontDestroyOnLoad(networkObject.gameObject);
             }
 
-            Debug.Log(playerref + " joined");
+            Debug.Log(playerRef + " joined");
         }
 
         public override void OnPlayerLeft(NetworkRunner runner, PlayerRef playerref)

@@ -1,5 +1,7 @@
+using Cinemachine;
 using Fusion;
 using UnityEngine;
+using UnityFx.Outline;
 
 namespace BrawlShooter
 {
@@ -47,6 +49,29 @@ namespace BrawlShooter
 
         public override void Spawned()
         {
+            // set camera follow this agent
+            if(HasInputAuthority)
+            {
+                if (NetworkManager.Instance.isUsingMultipeer)
+                {
+                    var virtualCamera = Runner.MultiplePeerUnityScene.FindObjectOfType<CinemachineVirtualCamera>();
+                    virtualCamera.Follow = transform;
+
+                    if (!HasStateAuthority)
+                    {
+                        Runner.IsVisible = false;
+                        Runner.ProvideInput = false;
+                        virtualCamera.gameObject.SetActive(false);
+                    }
+                }
+                else
+                {
+                    FindObjectOfType<CinemachineVirtualCamera>().Follow = transform;
+                }
+            }
+            
+            FindObjectOfType<OutlineEffect>().AddGameObject(gameObject);
+
             foreach (var ability in _abilities)
             {
                 ability.Initialize(this);
@@ -83,12 +108,20 @@ namespace BrawlShooter
             if (damage >= health)
             {
                 health = 0;
+                TriggerDieAnimation();
             }
             else
             {
                 health -= damage;
                 _invulnerabilityTimer = TickTimer.CreateFromSeconds(Runner, invulnerabilityTime);
             }
+        }
+
+        private void TriggerDieAnimation()
+        {
+            if (IsProxy || !Runner.IsForward) return;
+
+            NetworkAnimator.SetTrigger("die");
         }
 
         public void ResetStats()

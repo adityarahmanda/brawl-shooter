@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BrawlShooter
 {
-    public class NetworkRunnerCallbacks : ContextBehaviour, INetworkRunnerCallbacks
+    public abstract class NetworkRunnerCallbacks : MonoBehaviour, INetworkRunnerCallbacks
     {
         public virtual void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
         public virtual void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }

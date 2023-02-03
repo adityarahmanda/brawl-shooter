@@ -3,45 +3,86 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 namespace BrawlShooter
 {
-    public class NetworkSceneManager : NetworkSceneManagerBase
+    public class NetworkSceneManager : NetworkSceneManagerDefault
     {
-        private Scene _loadedScene;
-
-        protected override IEnumerator SwitchScene(SceneRef prevScene, SceneRef newScene, FinishedLoadingDelegate finished)
+        protected override IEnumerator SwitchSceneSinglePeer(SceneRef prevScene, SceneRef newScene, FinishedLoadingDelegate finished) 
         {
-            Debug.Log($"Switching Scene from {prevScene} to {newScene}");
-            if (newScene < 0)
+            yield return base.SwitchSceneSinglePeer(prevScene, newScene, finished);
+            EventManager.TriggerEvent(new SceneLoadedEvent());
+        }
+
+        protected override IEnumerator SwitchSceneMultiplePeer(SceneRef prevScene, SceneRef newScene, FinishedLoadingDelegate finished) 
+        {
+            Scene activeScene = SceneManager.GetActiveScene();
+
+            bool canTakeOverActiveScene = prevScene == default && IsScenePathOrNameEqual(activeScene, newScene);
+
+            LogTrace($"Start loading scene {newScene} in multi peer mode");
+            var loadSceneParameters = new LoadSceneParameters(LoadSceneMode.Additive);
+
+            var sceneToUnload = Runner.MultiplePeerUnityScene;
+            var tempSceneSpawnedPrefabs = Runner.IsMultiplePeerSceneTemp ? sceneToUnload.GetRootGameObjects() : Array.Empty<GameObject>();
+
+            if (canTakeOverActiveScene && NetworkRunner.GetRunnerForScene(activeScene) == null && SceneManager.sceneCount > 1)
             {
-                finished(new List<NetworkObject>());
-                yield break;
+                LogTrace("Going to attempt to unload the initial scene as it needs a separate Physics stage");
+                yield return UnloadSceneAsync(activeScene);
             }
 
-            if (_loadedScene != default)
+            if (SceneManager.sceneCount == 1 && tempSceneSpawnedPrefabs.Length == 0)
             {
-                Debug.Log($"Unloading Scene {_loadedScene.buildIndex}");
-                yield return SceneManager.UnloadSceneAsync(_loadedScene);
+                // can load non-additively, stuff will simply get unloaded
+                LogTrace($"Only one scene remained, going to load non-additively");
+                loadSceneParameters.loadSceneMode = LoadSceneMode.Single;
+            }
+            else if (sceneToUnload.IsValid())
+            {
+                // need a new temp scene here; otherwise calls to PhysicsStage will fail
+                if (Runner.TryMultiplePeerAssignTempScene())
+                {
+                    LogTrace($"Unloading previous scene: {sceneToUnload}, temp scene created");
+                    yield return UnloadSceneAsync(sceneToUnload);
+                }
             }
 
-            _loadedScene = default;
-            Debug.Log($"Loading scene {newScene}");
+            LogTrace($"Loading scene {newScene} with parameters: {JsonUtility.ToJson(loadSceneParameters)}");
 
-            List<NetworkObject> sceneObjects = new List<NetworkObject>();
-            if (newScene > 0)
+            Scene loadedScene = default;
+            yield return LoadSceneAsync(newScene, loadSceneParameters, scene => loadedScene = scene);
+
+            LogTrace($"Loaded scene {newScene} with parameters: {JsonUtility.ToJson(loadSceneParameters)}: {loadedScene}");
+
+            if (!loadedScene.IsValid())
             {
-                yield return SceneManager.LoadSceneAsync(newScene);
-                _loadedScene = SceneManager.GetSceneByBuildIndex(newScene);
-                Debug.Log($"Loaded scene {newScene}: {_loadedScene}");
-                sceneObjects = FindNetworkObjects(_loadedScene, disable: false);
+                throw new InvalidOperationException($"Failed to load scene {newScene}: async op failed");
             }
 
-            // Delay one frame
-            yield return null;
+            var sceneObjects = FindNetworkObjects(loadedScene, disable: true, addVisibilityNodes: true);
 
-            Debug.Log($"Switched Scene from {prevScene} to {newScene} - loaded {sceneObjects.Count} scene objects");
+            // unload temp scene
+            var tempScene = Runner.MultiplePeerUnityScene;
+            Runner.MultiplePeerUnityScene = loadedScene;
+            if (tempScene.IsValid())
+            {
+                if (tempSceneSpawnedPrefabs.Length > 0)
+                {
+                    LogTrace($"Temp scene has {tempSceneSpawnedPrefabs.Length} spawned prefabs, need to move them to the loaded scene.");
+                    foreach (var go in tempSceneSpawnedPrefabs)
+                    {
+                        Assert.Check(go.GetComponent<NetworkObject>(), $"Expected {nameof(NetworkObject)} on a GameObject spawned on the temp scene {tempScene.name}");
+                        SceneManager.MoveGameObjectToScene(go, loadedScene);
+                    }
+                }
+                LogTrace($"Unloading temp scene {tempScene}");
+                yield return UnloadSceneAsync(tempScene);
+            }
+
             finished(sceneObjects);
+
             EventManager.TriggerEvent(new SceneLoadedEvent());
         }
     }

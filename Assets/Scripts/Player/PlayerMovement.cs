@@ -7,7 +7,7 @@ namespace BrawlShooter
     {
         [Networked]
         public Vector2 moveDirection { get; private set; }
-        
+
         public override void FixedUpdateNetwork()
         {
             Move();

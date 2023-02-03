@@ -20,7 +20,7 @@ namespace BrawlShooter
 
         public void UpdateStatus(Player player)
         {
-            _status.text = "Player " + player.id + " (" + (player.isReady ? "<color=green>Ready</color>" : "<color=red> Not Ready</color>") + ")";
+            _status.text = player.username + " (" + (player.isReady ? "<color=green>Ready</color>" : "<color=red> Not Ready</color>") + ")";
         }
     }
 }

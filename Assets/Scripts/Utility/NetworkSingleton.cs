@@ -11,7 +11,7 @@ namespace BrawlShooter
         /// <summary>
         /// The instance.
         /// </summary>
-        private static T instance;
+        private static T _instance;
 
         [SerializeField]
         private bool _dontDestroyOnLoad = true;
@@ -28,22 +28,22 @@ namespace BrawlShooter
         {
             get
             {
-                if (instance == null)
+                if (_instance == null)
                 {
-                    instance = FindObjectOfType<T>();
+                    _instance = FindObjectOfType<T>();
                     
-                    if (instance == null)
+                    if (_instance == null)
                     {
-                        NetworkLauncher.Instance.Runner.Spawn(new GameObject(), Vector3.zero, Quaternion.identity, null, OnBeforeSpawned);
+                        // NetworkLauncher.Instance.Runner.Spawn(new GameObject(), Vector3.zero, Quaternion.identity, null, OnBeforeSpawned);
 
                         void OnBeforeSpawned(NetworkRunner runner, NetworkObject networkObject)
                         {
                             networkObject.name = typeof(T).Name;
-                            instance = networkObject.gameObject.AddComponent<T>();
+                            _instance = networkObject.gameObject.AddComponent<T>();
                         }
                     }
                 }
-                return instance;
+                return _instance;
             }
         }
 
@@ -56,9 +56,9 @@ namespace BrawlShooter
         /// </summary>
         protected virtual void Awake()
         {
-            if (instance == null)
+            if (_instance == null)
             {
-                instance = this as T;
+                _instance = this as T;
                 if(_dontDestroyOnLoad) DontDestroyOnLoad(gameObject);
             }
             else

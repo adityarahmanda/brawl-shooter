@@ -13,12 +13,12 @@ namespace BrawlShooter
         {
             if(_teleportFXPrefab == null) return;
 
-            var effect = LeanPool.Spawn(_teleportFXPrefab);
+            var effect = LeanPool.Spawn(_teleportFXPrefab, transform.position, Quaternion.identity);
             Runner.MoveToRunnerScene(effect);
 
             if (Object.HasInputAuthority)
             {
-                AudioManager.Instance.PlaySound2D("teleportIn");
+                // AudioManager.Instance.PlaySound2D("teleportIn");
             }
         }
 
@@ -26,12 +26,12 @@ namespace BrawlShooter
         {
             if (_teleportFXPrefab == null) return;
 
-            var effect = LeanPool.Spawn(_teleportFXPrefab);
+            var effect = LeanPool.Spawn(_teleportFXPrefab, transform.position, Quaternion.identity);
             Runner.MoveToRunnerScene(effect);
 
             if (Object.HasInputAuthority)
             {
-                AudioManager.Instance.PlaySound2D("teleportOut");
+                // AudioManager.Instance.PlaySound2D("teleportOut");
             }
         }
     }

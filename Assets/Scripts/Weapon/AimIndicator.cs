@@ -41,15 +41,15 @@ namespace BrawlShooter
             _indicatorView.gameObject.SetActive(value);
         }
 
-        public void UpdateIndicator(Vector2 aimDirection)
+        public void UpdateIndicator(Vector3 aimDirection)
         {
             if (!_indicatorView.gameObject.activeInHierarchy) return;
 
-            Quaternion targetRotation = Quaternion.LookRotation(new Vector3(aimDirection.x, 0, aimDirection.y), Vector3.up);
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, targetRotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+            Quaternion targetRotation = Quaternion.LookRotation(aimDirection, Vector3.up);
+            transform.rotation = targetRotation;
 
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, transform.up, out hit, range, _obstacleMask))
+            if (Physics.Raycast(transform.position, transform.forward, out hit, range, _obstacleMask))
             {
                 _indicatorView.viewLength = hit.distance;
             }

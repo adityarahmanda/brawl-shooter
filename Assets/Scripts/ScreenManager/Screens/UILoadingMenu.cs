@@ -13,8 +13,9 @@ namespace BrawlShooter
         private TextMeshProUGUI _loadingText;
         private LoadingType _loadingType;
 
+        [SerializeField]
+        private TextMeshProUGUI _ellipsisText;
         private int _ellipsisDotsCount;
-        private string _ellipsisText;
 
         [SerializeField]
         private float _ellipsisAnimationSpeed = .5f;
@@ -35,8 +36,7 @@ namespace BrawlShooter
             while(true)
             {
                 if (_ellipsisDotsCount > 3) _ellipsisDotsCount = 0;
-                _ellipsisText = new string('.', _ellipsisDotsCount);
-                UpdateLoadingText();
+                _ellipsisText.text = new string('.', _ellipsisDotsCount);
 
                 yield return new WaitForSeconds(_ellipsisAnimationSpeed);
                 
@@ -49,13 +49,10 @@ namespace BrawlShooter
             switch (_loadingType)
             {
                 case LoadingType.CreateSession:
-                    _loadingText.text = "Creating Session" + _ellipsisText;
-                    break;
-                case LoadingType.StartGame:
-                    _loadingText.text = "Starting Game" + _ellipsisText;
+                    _loadingText.text = "Creating Session";
                     break;
                 case LoadingType.LoadScene:
-                    _loadingText.text = "Loading Scene" + _ellipsisText;
+                    _loadingText.text = "Loading Scene";
                     break;
             }
         }
@@ -68,12 +65,6 @@ namespace BrawlShooter
             {
                 case LoadingType.CreateSession:
                     EventManager.AddEventListener<SessionCreatedEvent>(OnSessionCreated);
-                    break;
-                case LoadingType.StartGame:
-                    if (Runner.IsServer)
-                    {
-                        StartCoroutine(StartingGame());
-                    }
                     break;
                 case LoadingType.LoadScene:
                     EventManager.AddEventListener<SceneLoadedEvent>(OnSceneLoaded);
@@ -90,24 +81,6 @@ namespace BrawlShooter
             EventManager.RemoveEventListener<SessionCreatedEvent>(OnSessionCreated);
         }
 
-        public IEnumerator StartingGame()
-        {
-            yield return new WaitUntil(WaitAllPlayersHasSelectedCharacter);
-
-            StartLoading(LoadingType.LoadScene);
-            Launcher.LoadGameplay();
-        }
-
-        public bool WaitAllPlayersHasSelectedCharacter()
-        {
-            foreach (var player in Players)
-            {
-                if (!player.HasSelectedCharacter) return false;
-            }
-
-            return true;
-        }
-
         public void OnSceneLoaded(SceneLoadedEvent e)
         {
             ScreenManager.Instance.HideAll();
@@ -118,7 +91,6 @@ namespace BrawlShooter
     public enum LoadingType
     {
         CreateSession,
-        StartGame,
         LoadScene
     }
 }

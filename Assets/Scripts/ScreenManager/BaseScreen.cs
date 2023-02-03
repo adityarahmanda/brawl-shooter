@@ -5,7 +5,7 @@ using UnityEngine.Events;
 namespace BrawlShooter
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public class BaseScreen : ContextBehaviour
+    public class BaseScreen : MonoBehaviour
     {
         public enum AnimationType
         {

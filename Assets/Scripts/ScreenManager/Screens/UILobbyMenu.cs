@@ -78,11 +78,13 @@ namespace BrawlShooter
 
         protected override void OnShow()
         {
-            foreach (var player in Players)
+            foreach (var player in NetworkManager.Instance.players.Values)
             {
                 AddLobbyStatus(player);
             }
         }
+
+        private void ToggleReady() => NetworkManager.Instance.localPlayer.RPC_ToggleReady();
 
         private void OnPlayerSpawned(PlayerSpawnedEvent e) => AddLobbyStatus(e.player);
         private void OnPlayerDespawned(PlayerDespawnedEvent e) => RemoveLobbyStatus(e.player);
@@ -90,7 +92,7 @@ namespace BrawlShooter
         {
             var player = e.player;
 
-            if (IsLocal(player))
+            if (NetworkManager.Instance.IsLocalPlayer(player))
             {
                 UpdateReadyText(player);
             }
@@ -100,13 +102,10 @@ namespace BrawlShooter
         }
 
         public void SetRoomName(string roomName) => _roomNameText.text = roomName;
-        private void ToggleReady() => Local.RPC_ToggleReady();
 
         public void CheckAllPlayersReady()
         {
-            if (!Runner.IsServer) return;
-
-            foreach(var player in Players)
+            foreach (var player in NetworkManager.Instance.players.Values)
             {
                 if (!player.isReady) return;
             }
@@ -117,10 +116,8 @@ namespace BrawlShooter
         [Rpc]
         public void RPC_StartGame()
         {
-            EventManager.TriggerEvent(new GameStartedEvent());
-            ScreenManager.Instance.Show<UILoadingMenu>().StartLoading(LoadingType.StartGame);
+            NetworkManager.Instance.LoadGameplay();
+            ScreenManager.Instance.Show<UILoadingMenu>().StartLoading(LoadingType.LoadScene);
         }
     }
-
-    public struct GameStartedEvent { }
 }

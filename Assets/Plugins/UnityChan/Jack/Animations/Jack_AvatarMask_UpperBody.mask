@@ -1,0 +1,187 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Jack_AvatarMask_UpperBody
+  m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Chr1_Reference
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_L_UpLeg
+    m_Weight: 0
+  - m_Path: Chr1_Reference/J_Hips/J_L_UpLeg/J_L_knee
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_L_UpLeg/J_L_Leg
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_L_UpLeg/J_L_Leg/J_L_Foot
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_L_UpLeg/J_L_Leg/J_L_Foot/J_L_ToeBase
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_R_UpLeg
+    m_Weight: 0
+  - m_Path: Chr1_Reference/J_Hips/J_R_UpLeg/J_R_knee
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_R_UpLeg/J_R_Leg
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_R_UpLeg/J_R_Leg/J_R_Foot
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_R_UpLeg/J_R_Leg/J_R_Foot/J_R_ToeBase
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_skirt1_L
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_skirt1_L/J_skirt2_L
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_skirt1_R
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_skirt1_R/J_skirt2_R
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_Arm_00_tw
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Elbow
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_ForeArm_00_tw
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandIndex1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandIndex1/J_LeftHandIndex2
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandIndex1/J_LeftHandIndex2/J_LeftHandIndex3
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandMiddle1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandMiddle1/J_LeftHandMiddle2
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandMiddle1/J_LeftHandMiddle2/J_LeftHandMiddle3
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandPinky1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandPinky1/J_LeftHandPinky2
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandPinky1/J_LeftHandPinky2/J_LeftHandPinky3
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandRing1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandRing1/J_LeftHandRing2
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandRing1/J_LeftHandRing2/J_LeftHandRing3
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandThumb1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandThumb1/J_LeftHandThumb2
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandThumb1/J_LeftHandThumb2/J_LeftHandThumb3
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_L_Shoulder/J_L_Arm/J_L_ForeArm/J_L_Hand/J_LeftHandThumb1/J_LeftHandThumb2/J_LeftHandThumb3/J_LeftHandThumb4
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_eye_L
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_eye_R
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairB10
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairB10/J_hairB11
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairB10/J_hairB11/J_hairB12
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairF10
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairF10/J_hairF12
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairF20
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairF20/J_hair21
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairF20/J_hair21/J_hair22
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairS10_L
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairS10_L/J_hairS11_L
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairS10_R
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Neck/J_Head/J_hairS10_R/J_hairS11_R
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Necklace
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_Necklace/J_Necklace1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_Arm_00_tw
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Elbow
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_ForeArm_00_tw
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandIndex1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandIndex1/J_RightHandIndex2
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandIndex1/J_RightHandIndex2/J_RightHandIndex3
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandMiddle1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandMiddle1/J_RightHandMiddle2
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandMiddle1/J_RightHandMiddle2/J_RightHandMiddle3
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandPinky1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandPinky1/J_RightHandPinky2
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandPinky1/J_RightHandPinky2/J_RightHandPinky3
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandRing1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandRing1/J_RightHandRing2
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandRing1/J_RightHandRing2/J_RightHandRing3
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandThumb1
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandThumb1/J_RightHandThumb2
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandThumb1/J_RightHandThumb2/J_RightHandThumb3
+    m_Weight: 1
+  - m_Path: Chr1_Reference/J_Hips/J_Spine/J_Spine1/J_Spine2/J_R_Shoulder/J_R_Arm/J_R_ForeArm/J_R_Hand/J_RightHandThumb1/J_RightHandThumb2/J_RightHandThumb3/J_RightHandThumb4
+    m_Weight: 1
+  - m_Path: jack_body
+    m_Weight: 1
+  - m_Path: jack_eye
+    m_Weight: 1
+  - m_Path: jack_face
+    m_Weight: 1
+  - m_Path: jack_head
+    m_Weight: 1

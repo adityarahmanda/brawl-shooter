@@ -8,7 +8,7 @@ namespace BrawlShooter
 
         private void Start()
         {
-            _camera = Camera.main.transform;
+            _camera = FindObjectOfType<Camera>().transform;
         }
 
         private void LateUpdate()

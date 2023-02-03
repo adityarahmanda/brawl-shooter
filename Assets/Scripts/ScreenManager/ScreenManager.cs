@@ -16,7 +16,6 @@ namespace BrawlShooter
         private List<BaseScreen> showingScreens = new List<BaseScreen>();
         private Dictionary<string, ObjectResourcesLoader<BaseScreen>> screensDict;
 
-        public bool dontDestroyOnLoad;
         public string defaultScreen = null;
         public List<ObjectResourcesLoader<BaseScreen>> allScreens = new List<ObjectResourcesLoader<BaseScreen>>();
 
@@ -37,6 +36,7 @@ namespace BrawlShooter
         protected override void Awake()
         {
             base.Awake();
+            dontDestroyOnLoad = true;
             Initialize();
         }
 

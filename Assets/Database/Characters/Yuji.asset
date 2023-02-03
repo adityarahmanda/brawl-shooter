@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9337b4d91f177847a1b18cb45640924, type: 3}
+  m_Name: Yuji
+  m_EditorClassIdentifier: 
+  Id: ed83b805-530e-4e58-a838-c21a6443d733
+  characterName: Yuji
+  characterPrefab: {fileID: 2451363093986102596, guid: a4b1a0d7892e15944865683b5219b02e, type: 3}
+  agentPrefab: {fileID: 2024232173837241982, guid: 26922d475c79ab448ad530831d3b99c7, type: 3}

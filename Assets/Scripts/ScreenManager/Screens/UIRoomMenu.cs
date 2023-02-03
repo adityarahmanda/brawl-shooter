@@ -14,7 +14,7 @@ namespace BrawlShooter
 
         public void CreateSession()
         {
-            NetworkLauncher.Instance.Launch(gameMode, roomInput.text);
+            NetworkManager.Instance.StartSession(gameMode, roomInput.text);
             ScreenManager.Instance.Show<UILoadingMenu>().StartLoading(LoadingType.CreateSession);
         }
     }

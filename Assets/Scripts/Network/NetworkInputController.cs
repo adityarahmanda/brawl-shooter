@@ -4,18 +4,16 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static Fusion.NetworkProjectConfig;
 
 namespace BrawlShooter
 {
-    public class NetworkInputController : NetworkContextBehaviour, INetworkRunnerCallbacks
+    public class NetworkInputController : NetworkBehaviour, INetworkRunnerCallbacks
     {
-        public static bool fetchInput = false;
-
         private NetworkInputData _data = new NetworkInputData();
         private NetworkButtons _previousButton { get; set; }
 
-        private Vector2 _moveDelta;
-        private Vector2 _aimDelta;
+        private Vector3 _aimDirection;
         
         [SerializeField] 
         private LayerMask _aimMask;
@@ -24,42 +22,20 @@ namespace BrawlShooter
 
         public override void Spawned()
         {
-            if (Object.HasInputAuthority)
-            {
-                Runner.AddCallbacks(this);
-            }
+            if (!Object.HasInputAuthority) return;
 
-            fetchInput = true;
-        }
-
-        private void Update()
-        {
-            _moveDelta = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            Vector3 aimDirection = Vector3.zero;
-            if (Physics.Raycast(ray, out hit, 100f, _aimMask))
-            {
-                if (hit.collider != null)
-                {
-                    aimDirection = hit.point - transform.position;
-                }
-            }
-
-            _aimDelta = new Vector2(aimDirection.x, aimDirection.z);
+            Runner.AddCallbacks(this);
         }
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
-            if (!Object.HasInputAuthority || !fetchInput) return;
+            if (!Object.HasInputAuthority) return;
 
             _data = new NetworkInputData();
 
-            _data.buttons.Set(InputButton.Fire, Input.GetMouseButtonDown(0));
-            _data.moveDirection = _moveDelta;
-            _data.aimDirection = _aimDelta;
+            _data.buttons.Set(InputButton.Fire, Input.GetMouseButton(0));
+            _data.moveDirection = GetMoveDirection();
+            _data.aimDirection = GetAimDirection();
 
             input.Set(_data);
             _data = default;
@@ -75,6 +51,26 @@ namespace BrawlShooter
 
                 OnFetchInput?.Invoke(new InputContext(pressed, released, data));
             }
+        }
+
+        private Vector2 GetMoveDirection() => new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        private Vector3 GetAimDirection()
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            
+            if (Physics.Raycast(ray, out hit, 100f, _aimMask))
+            {
+                if (hit.collider != null)
+                {
+                    Vector3 direction = hit.point - transform.position;
+                    _aimDirection = new Vector3(direction.x, 0, direction.z).normalized;
+                    return _aimDirection;
+                }
+            }
+
+            return _aimDirection;
         }
 
         #region Unused Network Callbacks
@@ -100,7 +96,7 @@ namespace BrawlShooter
     {
         public NetworkButtons buttons;
 
-        public Vector2 aimDirection;
+        public Vector3 aimDirection;
         public Vector2 moveDirection;
 
         public bool GetButton(InputButton button)

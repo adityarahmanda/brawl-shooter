@@ -1,7 +1,5 @@
-using BrawlShooter;
 using Fusion;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace BrawlShooter
 {
@@ -9,11 +7,10 @@ namespace BrawlShooter
     {
         public Weapon weapon { get; private set; }
 
-        private Vector2 _aimDirection;
-        public bool _isAiming;
+        private Vector3 _aimDirection;
 
         [Networked]
-        public NetworkBool isShooting { private get; set; }
+        public bool isShooting { private get; set; }
 
         [SerializeField]
         private SegmentedProgressBar _weaponClipBar;
@@ -22,9 +19,23 @@ namespace BrawlShooter
         private AimIndicator _aimIndicatorPrefab;
         private AimIndicator _aimIndicator;
 
+        private float _initRotationSpeed;
+
         private void Awake()
         {
             weapon = GetComponentInChildren<Weapon>();
+        }
+
+        private void OnEnable()
+        {
+            weapon.OnShootStarted.AddListener(OnShootStarted);
+            weapon.OnShootEnded.AddListener(OnShootEnded);
+        }
+
+        private void OnDisable()
+        {
+            weapon.OnShootStarted.RemoveListener(OnShootStarted);
+            weapon.OnShootEnded.RemoveListener(OnShootEnded);
         }
 
         public override void Spawned()
@@ -48,7 +59,6 @@ namespace BrawlShooter
         public override void FixedUpdateNetwork()
         {
             UpdateWeaponClipBar();
-            HandleAnimation();
         }
 
         public void UpdateWeaponClipBar()
@@ -58,11 +68,28 @@ namespace BrawlShooter
             _weaponClipBar.fillAmount = weapon.currentClip / weapon.maxClip;
         }
 
-        public void HandleAnimation()
+        public void OnShootStarted()
+        {
+            _initRotationSpeed = Agent.NetworkCharacterController.rotationSpeed;
+            Agent.NetworkCharacterController.rotationSpeed = 0;
+
+            Quaternion targetRot = Quaternion.LookRotation(_aimDirection, Vector3.up);
+            Agent.NetworkCharacterController.TeleportToRotation(targetRot);
+
+            SetShootingAnimation(true);
+        }
+
+        public void OnShootEnded()
+        {
+            Agent.NetworkCharacterController.rotationSpeed = _initRotationSpeed;
+            SetShootingAnimation(false);
+        }
+
+        public void SetShootingAnimation(bool value)
         {
             if (IsProxy || !Runner.IsForward) return;
 
-            Agent.NetworkAnimator.Animator.SetBool("isShooting", isShooting);
+            Agent.NetworkAnimator.Animator.SetBool("isShooting", value);
         }
 
         public override void OnProcessInput(InputContext context)
@@ -76,7 +103,7 @@ namespace BrawlShooter
 
             if (context.released.IsSet(InputButton.Fire))
             {
-                weapon.OnProcessFire(context);
+                weapon.OnProcessFire(_aimDirection);
                 _aimIndicator?.ShowIndicator(false);
             }
         }

@@ -3,49 +3,48 @@ using UnityEngine;
 
 namespace BrawlShooter
 {
-    public class Player : NetworkContextBehaviour
+    public class Player : NetworkBehaviour
     {
-        public int id = -1;
+        public string username;
         public PlayerRef Ref => Object.InputAuthority;
 
         [Networked]
         public NetworkBool isReady { get; set; }
 
         [Networked]
-        public int selectedCharacterIndex { get; set; } = -1;
-        public bool HasSelectedCharacter => selectedCharacterIndex > -1;
-
-        public CharacterData CharacterData;
-
+        public NetworkString<_64> selectedCharacterId { get; set; }
+        
         public PlayerAgent Agent { get; private set; }
+        public CharacterData CharacterData => Agent.CharacterData;
 
         public override void Spawned()
         {
-            if (Object.HasInputAuthority)
-            {
-                NetworkLauncher.Instance.Local = this;
-            }
-
-            id = Object.InputAuthority;
             isReady = false;
 
+            NetworkManager.Instance.AddPlayer(this);
             EventManager.TriggerEvent(new PlayerSpawnedEvent { player = this });
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             DespawnAgent();
+            NetworkManager.Instance.RemovePlayer(this);
             EventManager.TriggerEvent(new PlayerDespawnedEvent { player = this });
         }
 
-        public PlayerAgent SpawnAgent(Vector3 position, Quaternion rotation)
+        public void SpawnAgent(Transform spawnTransform)
         {
-            if (CharacterData == null) return null;
+            SpawnAgent(spawnTransform.position, spawnTransform.rotation);
+        }
 
-            Agent = Runner.Spawn(CharacterData.agentPrefab, position, rotation, Ref);
+        public void SpawnAgent(Vector3 position, Quaternion rotation)
+        {
+            var agentPrefab = NetworkManager.Instance.isUsingMultipeer 
+                ? NetworkManager.Instance.testingAgentPrefab 
+                : GlobalSettings.Instance.database.GetCharacterData(selectedCharacterId).agentPrefab;
+
+            Agent = Runner.Spawn(agentPrefab, position, rotation, Ref);
             Agent.SetOwner(this);
-
-            return Agent;
         }
 
         public void DespawnAgent()
@@ -55,18 +54,21 @@ namespace BrawlShooter
             Runner.Despawn(Agent.Object);
         }
 
-        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+        [Rpc]
         public void RPC_ToggleReady()
         {
-            isReady = !isReady;
+            if (HasStateAuthority)
+            {
+                isReady = !isReady;
+            }
+            
             EventManager.TriggerEvent(new PlayerReadyEvent { player = this });
         }
 
-        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-        public void RPC_SetCharacterData(int selectedCharacterIndex)
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void RPC_SetSelectedCharacterId(string id)
         {
-            this.selectedCharacterIndex = selectedCharacterIndex;
-            EventManager.TriggerEvent(new PlayerSelectCharacterEvent { player = this });
+            selectedCharacterId = id;
         }
     }
 
@@ -81,11 +83,6 @@ namespace BrawlShooter
     }
 
     public struct PlayerReadyEvent
-    {
-        public Player player;
-    }
-
-    public struct PlayerSelectCharacterEvent
     {
         public Player player;
     }

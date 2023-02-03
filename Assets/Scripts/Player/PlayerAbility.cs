@@ -3,7 +3,7 @@ using Fusion;
 
 namespace BrawlShooter
 {
-    public abstract class PlayerAbility : NetworkContextBehaviour
+    public abstract class PlayerAbility : NetworkBehaviour
     {
         public Player Owner => Agent.Owner;
         public PlayerAgent Agent { get; protected set; }

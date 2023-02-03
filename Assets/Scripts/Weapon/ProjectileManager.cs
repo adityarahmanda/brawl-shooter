@@ -42,10 +42,10 @@ namespace BrawlShooter
         public ProjectileInterpolationData InterpolationData;
     }
 
-    public class ProjectileManager : NetworkContextBehaviour
+    [RequireComponent(typeof(Weapon))]
+    public class ProjectileManager : NetworkBehaviour
     {
         // PRIVATE MEMBERS
-        [SerializeField]
         private Weapon _weapon;
 
         [SerializeField]
@@ -53,12 +53,12 @@ namespace BrawlShooter
         [SerializeField]
         private Projectile _projectilePrefab;
 
-        [Networked, Capacity(5)]
+        [Networked, Capacity(50)]
         private NetworkArray<ProjectileData> _projectiles { get; }
         [Networked]
         private int _projectileCount { get; set; }
 
-        private Projectile[] _visibleProjectiles = new Projectile[5];
+        private Projectile[] _visibleProjectiles = new Projectile[50];
         private int _visibleProjectileCount;
 
         private ProjectileContext _projectileContext;
@@ -66,9 +66,14 @@ namespace BrawlShooter
 
         // PUBLIC MEMBERS
 
-        public void AddProjectile(Vector3 firePosition, Vector3 direction)
+        private void Awake()
         {
-            var fireData = _projectilePrefab.GetFireData(Runner, firePosition, direction);
+            _weapon = GetComponent<Weapon>();
+        }
+
+        public void AddProjectile(Vector3 firePosition, Vector3 direction, float maxDistance)
+        {
+            var fireData = _projectilePrefab.GetFireData(Runner, firePosition, direction, maxDistance);
 
             AddProjectile(fireData);
         }

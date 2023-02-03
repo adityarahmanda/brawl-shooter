@@ -13,25 +13,24 @@ namespace BrawlShooter
 
         public override void OnConnectedToServer(NetworkRunner runner)
         {
-            Debug.Log("Connected to server");
+            Debug.Log($"{runner.name} Connected to server");
         }
 
         public override void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
         {
-            Debug.Log($"Connect failed {reason}");
+            Debug.Log($"{runner.name} Connect failed {reason}");
         }
 
         public override void OnDisconnectedFromServer(NetworkRunner runner)
         {
-            Debug.Log("Disconnected from server");
+            Debug.Log($"{runner.name} Disconnected from server");
         }
 
         public override void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
-            Debug.Log("Shutting Down Runner...");
+            Debug.Log($"Shutting Down {runner.name}...");
             
             string message = "";
-            
             switch (shutdownReason)
             {
                 //case GameManager.ShutdownReason_GameAlreadyRunning:
@@ -57,11 +56,6 @@ namespace BrawlShooter
                     break;
             }
             Debug.Log(message);
-
-            // Launcher.ObjectPool.ClearPools();
-
-            ScreenManager.Instance.HideAll();
-            ScreenManager.Instance.ShowDefault();
         }
     }
 }

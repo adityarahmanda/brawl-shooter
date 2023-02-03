@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 4597136039767344531}
   - component: {fileID: 5443023197647911415}
   - component: {fileID: 2306192643457192104}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Agent Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 3}
+  m_AnchoredPosition: {x: 0, y: 3.5}
   m_SizeDelta: {x: 160, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1442387231965029678
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 8727119378634799911}
   - component: {fileID: 8727119378634799908}
   - component: {fileID: 8727119378634799909}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Agent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -387,7 +387,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  _isAiming: 0
   _weaponClipBar: {fileID: 5746400512686053083}
   _aimIndicatorPrefab: {fileID: 3414889873370784689, guid: f55acea72c723d74f984fc11944e4d2b, type: 3}
 --- !u!114 &8727119378634799909
@@ -403,7 +402,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  _teleportFXPrefab: {fileID: 0}
+  _teleportFXPrefab: {fileID: 19800000, guid: 83cd9cc9f9c88824ba18dc59b05ae328, type: 3}
 --- !u!1001 &7104468477429956934
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -411,9 +410,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5578643871413482516}
     m_Modifications:
+    - target: {fileID: 267218611174422424, guid: f6470122ed2a04396806ed472fb032ff, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936463603068816040, guid: f6470122ed2a04396806ed472fb032ff, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3253697496625059739, guid: f6470122ed2a04396806ed472fb032ff, type: 3}
       propertyPath: m_Name
       value: Weapon Clip Bar
+      objectReference: {fileID: 0}
+    - target: {fileID: 3253697496625059739, guid: f6470122ed2a04396806ed472fb032ff, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3253697496625059740, guid: f6470122ed2a04396806ed472fb032ff, type: 3}
       propertyPath: m_Pivot.x
@@ -498,6 +509,18 @@ PrefabInstance:
     - target: {fileID: 3253697496625059740, guid: f6470122ed2a04396806ed472fb032ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3253697497003275805, guid: f6470122ed2a04396806ed472fb032ff, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5014035190649501692, guid: f6470122ed2a04396806ed472fb032ff, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963554206633616156, guid: f6470122ed2a04396806ed472fb032ff, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6470122ed2a04396806ed472fb032ff, type: 3}
@@ -524,9 +547,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5578643871413482516}
     m_Modifications:
+    - target: {fileID: 3062644744516150337, guid: b629b62702fca5d43aef9d31637c2ad2, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3253697495869430876, guid: b629b62702fca5d43aef9d31637c2ad2, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3253697496625059739, guid: b629b62702fca5d43aef9d31637c2ad2, type: 3}
       propertyPath: m_Name
       value: Health Bar
+      objectReference: {fileID: 0}
+    - target: {fileID: 3253697496625059739, guid: b629b62702fca5d43aef9d31637c2ad2, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3253697496625059740, guid: b629b62702fca5d43aef9d31637c2ad2, type: 3}
       propertyPath: m_Pivot.x
@@ -611,6 +646,10 @@ PrefabInstance:
     - target: {fileID: 3253697496625059740, guid: b629b62702fca5d43aef9d31637c2ad2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3253697497003275805, guid: b629b62702fca5d43aef9d31637c2ad2, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b629b62702fca5d43aef9d31637c2ad2, type: 3}

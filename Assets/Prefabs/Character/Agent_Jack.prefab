@@ -122,7 +122,7 @@ PrefabInstance:
     - target: {fileID: 8727119378634799914, guid: a41849708c20df94fa8a1b15f45577cb, type: 3}
       propertyPath: NetworkedBehaviours.Array.data[7]
       value: 
-      objectReference: {fileID: 8027919800935199743}
+      objectReference: {fileID: 0}
     - target: {fileID: 8727119378634799914, guid: a41849708c20df94fa8a1b15f45577cb, type: 3}
       propertyPath: NetworkedBehaviours.Array.data[8]
       value: 
